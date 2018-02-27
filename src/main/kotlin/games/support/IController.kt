@@ -1,4 +1,4 @@
-package tomlazar.games.support
+package games.support
 
 import javafx.scene.Scene
 

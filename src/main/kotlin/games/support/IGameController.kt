@@ -1,6 +1,4 @@
-package tomlazar.games.support
-
-import javafx.scene.canvas.GraphicsContext
+package games.support
 
 abstract class IGameController : IGameObject() {
 
@@ -10,5 +8,5 @@ abstract class IGameController : IGameObject() {
     override var y      = 0.0
 
     // This object has no form
-    override fun render(gc: GraphicsContext) { }
+
 }
