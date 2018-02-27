@@ -29,7 +29,7 @@ class Grid {
 
         for ((x, xarr) in map.sliceArray(startRow..endRow).withIndex()) {
             for ((y, yval) in xarr.sliceArray(startColumn..endColumn).withIndex()) {
-                yval.render(gc, x * cellSize - (cellSize - xOffset), y * cellSize - (cellSize - yOffset))
+                yval.render(gc, x * cellSize - xOffset, y * cellSize - yOffset)
             }
         }
     }
