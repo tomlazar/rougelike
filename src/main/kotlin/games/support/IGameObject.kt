@@ -1,4 +1,4 @@
-package tomlazar.games.support
+package games.support
 
 import javafx.geometry.BoundingBox
 import javafx.scene.canvas.GraphicsContext
@@ -21,6 +21,6 @@ abstract class IGameObject {
         return getBoundingBox().intersects(other.getBoundingBox())
     }
 
-    abstract fun render(gc: GraphicsContext)
-    abstract fun update()
+    abstract fun render(gc: GraphicsContext, xOffset: Double, yOffset: Double)
+    fun update() {}
 }
