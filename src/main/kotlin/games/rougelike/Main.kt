@@ -1,17 +1,17 @@
 package games.rougelike
 
-import games.support.Grid
-import games.support.IController
-import games.support.IGameObject
+import games.support.*
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.application.Application
 import javafx.event.EventHandler
 import javafx.scene.Group
+import javafx.scene.ParallelCamera
 import javafx.scene.Scene
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
+import javafx.scene.input.KeyCode
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Duration
@@ -24,9 +24,14 @@ const val HEIGHT = 500.0
 val BACKGROUND = Color.LIGHTBLUE!!
 
 val grid = Grid()
-val gameObjects = mutableListOf<IGameObject>()
-val controllers = listOf<IController>()
+val keybank = KeyBank()
+
+val player = Player()
+val camera = TrackingCamera(player)
+val gameObjects = mutableListOf<IGameObject>(player, camera)
+val controllers = mutableListOf<IController>(keybank)
 val addLaterQueue = mutableListOf<IGameObject>()
+
 
 class Main : Application() {
 
@@ -37,6 +42,7 @@ class Main : Application() {
 
         val scene = Scene(root)
         stage.scene = scene
+        buildWorld(scene)
 
         controllers.forEach { c: IController -> c.addEvents(scene) }
 
@@ -50,6 +56,12 @@ class Main : Application() {
         loop.play()
 
         stage.show()
+    }
+
+    private fun buildWorld(scene: Scene) {
+        gameObjects.add(player)
+        gameObjects.add(camera)
+        scene.camera = camera.sceneCamera
     }
 
     private fun update() {
@@ -68,10 +80,13 @@ class Main : Application() {
     }
 
     private fun render(gc: GraphicsContext) {
+        /*
         gc.fill = BACKGROUND
         gc.fillRect(0.0, 0.0, WIDTH, HEIGHT)
+        */
 
         grid.render(gc, 30.0, 0.0, grid.width, grid.width)
+        gameObjects.forEach({ o: IGameObject -> o.render(gc) })
     }
 }
 

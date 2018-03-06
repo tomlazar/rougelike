@@ -1,26 +1,34 @@
 package games.rougelike
 
+import games.support.Grid
 import games.support.IController
 import games.support.IGameObject
+import games.support.*
 import javafx.scene.Scene
 import javafx.scene.canvas.GraphicsContext
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.paint.Color
 
-class Player : IGameObject(), IController {
+class Player : IGameObject() {
+    val radius = 15.0
+    override var height: Double = radius * 2
+    override var width: Double = radius * 2
+    override var x: Double = 0.0
+    override var y: Double = 0.0
 
-    override fun addEvents(scene: Scene) {
-
+    override fun render(gc: GraphicsContext) {
+        gc.fill = Color.PEACHPUFF
+        gc.fillOval(x - radius, y - radius, width, height)
     }
 
-    override var height: Double = 10.0
-    override var width: Double = 10.0
-    override var x: Double = 200.0
-    override var y: Double = 200.0
+    val speed = Grid.cellSize * 2
 
-    override fun render(gc: GraphicsContext, xOffset: Double, yOffset: Double) {
-        gc.fill = Color.RED
-        gc.fillOval(xOffset + x, yOffset + y, width, height);
+    override fun update() {
+        val dx = speed / FPS * keybank.keyNegPos(key_left, key_right)
+        val dy = speed / FPS * keybank.keyNegPos(key_up, key_down)
+
+        x += dx
+        y += dy
     }
-
-
 }

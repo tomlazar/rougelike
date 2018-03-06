@@ -21,6 +21,6 @@ abstract class IGameObject {
         return getBoundingBox().intersects(other.getBoundingBox())
     }
 
-    abstract fun render(gc: GraphicsContext, xOffset: Double, yOffset: Double)
-    fun update() {}
+    abstract fun render(gc: GraphicsContext)
+    abstract fun update()
 }
