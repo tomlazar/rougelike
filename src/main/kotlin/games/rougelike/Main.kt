@@ -15,12 +15,13 @@ import javafx.scene.input.KeyCode
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Duration
+import java.util.*
 
 
 const val APP_NAME: String = ""
 const val FPS = 25.0
-const val WIDTH = 600.0
-const val HEIGHT = 500.0
+const val WIDTH = 800.0
+const val HEIGHT = 600.0
 val BACKGROUND = Color.LIGHTBLUE!!
 
 val grid = Grid()
@@ -28,6 +29,7 @@ val keybank = KeyBank()
 
 val player = Player()
 val camera = TrackingCamera(player)
+
 val gameObjects = mutableListOf<IGameObject>(player, camera)
 val controllers = mutableListOf<IController>(keybank)
 val addLaterQueue = mutableListOf<IGameObject>()
@@ -46,7 +48,7 @@ class Main : Application() {
 
         controllers.forEach { c: IController -> c.addEvents(scene) }
 
-        val canvas = Canvas(WIDTH, HEIGHT)
+        val canvas = Canvas(Grid.mapFromGrid(Grid.mapWidth.toDouble()), Grid.mapFromGrid(Grid.mapHeight.toDouble()))
         root.children.add(canvas)
 
         val kf = KeyFrame(Duration(1000 / FPS), EventHandler { update(); render(canvas.graphicsContext2D) })
@@ -55,6 +57,8 @@ class Main : Application() {
         loop.cycleCount = Animation.INDEFINITE
         loop.play()
 
+        stage.width = WIDTH
+        stage.height = HEIGHT
         stage.show()
     }
 
@@ -62,6 +66,13 @@ class Main : Application() {
         gameObjects.add(player)
         gameObjects.add(camera)
         scene.camera = camera.sceneCamera
+
+        for (i in 1..4)
+            gameObjects.add(
+                    Junker((5 + (Random().nextInt(Grid.mapWidth - 5))).toDouble(),
+                            (5 + (Random().nextInt(Grid.mapHeight - 5))).toDouble(),
+                            if (i <= 2) player else gameObjects.last(),
+                            Grid.cellSize * (Random().nextDouble() +  (if (i <= 2) 2.0 else 0.5))))
     }
 
     private fun update() {
@@ -85,7 +96,7 @@ class Main : Application() {
         gc.fillRect(0.0, 0.0, WIDTH, HEIGHT)
         */
 
-        grid.render(gc, 30.0, 0.0, grid.width, grid.width)
+        grid.render(gc)
         gameObjects.forEach({ o: IGameObject -> o.render(gc) })
     }
 }
