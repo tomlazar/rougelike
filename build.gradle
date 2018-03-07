@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.2.30'
 
     repositories {
         mavenCentral()
@@ -18,7 +18,7 @@ apply plugin: 'application'
 
 sourceCompatibility = 1.8
 
-mainClassName = "tomlazar.games.projects.three.DustBunnieKt"
+mainClassName = "games.rougelike.MainKt"
 
 repositories {
     mavenCentral()
