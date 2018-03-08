@@ -4,7 +4,6 @@ import javafx.scene.*
 import javafx.scene.canvas.GraphicsContext
 import games.rougelike.*
 import javafx.geometry.Point3D
-import javafx.scene.input.KeyCode
 
 class TrackingCamera(trackingObject: IGameObject? = null) : IGameController() {
 
@@ -22,8 +21,8 @@ class TrackingCamera(trackingObject: IGameObject? = null) : IGameController() {
 
     override fun update() {
         if (trackingObject != null) {
-            sceneCamera.translateX = trackingObject!!.x - (WIDTH / 2)
-            sceneCamera.translateY = trackingObject!!.y - (HEIGHT / 2)
+            sceneCamera.translateX = trackingObject!!.x - (GAME_WIDTH / 2)
+            sceneCamera.translateY = trackingObject!!.y - (GAME_HEIGHT / 2)
             sceneCamera.translateZ += zoomSpeed / FPS * keybank.keyNegPos(key_zoom_out, key_zoom_in)
         }
     }
