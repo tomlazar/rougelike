@@ -20,8 +20,9 @@ class Grid {
         }
     }
 
-    val map    = Array(mapWidth, { Array(mapHeight, { BackgroundObject() }) })
-    
+    val map    = Array(mapWidth, { x ->  Array(mapHeight, { y ->
+        BackgroundObject(if (x in 5 until 10 && y in 5 until 15) BackgroundObject.BackgroundType.GAP else BackgroundObject.BackgroundType.FLOOR) }) })
+
     fun render(gc: GraphicsContext) {
         gc.fill = Color.BLUE
 
