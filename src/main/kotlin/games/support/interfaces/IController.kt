@@ -1,4 +1,4 @@
-package games.support
+package games.support.interfaces
 
 import javafx.scene.Scene
 

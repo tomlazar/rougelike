@@ -1,30 +1,32 @@
 package games.rougelike
 
+import games.rougelike.levels.GameLevel
 import games.support.Grid
-import games.support.IGameObject
+import games.support.interfaces.IGameObject
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
 import java.util.*
 import kotlin.math.*
 
+@Suppress("ConvertSecondaryConstructorToPrimary")
 class Junker : IGameObject {
-    val radius = Grid.cellSize / 2
+    private val radius = Grid.cellSize / 2
     override var height = radius * 2
     override var width = radius * 2
     override var x: Double
     override var y: Double
 
-    var target: IGameObject?
-    var speed: Double
+    private var target: IGameObject?
+    private var speed: Double
 
-    constructor (gridx: Double, gridy: Double, target: IGameObject? = null, speed: Double = Grid.cellSize * 1.5) {
-        x = Grid.mapFromGrid(gridx)
-        y = Grid.mapFromGrid(gridy)
+    constructor (gc: GraphicsContext, gridX: Double, gridY: Double, target: IGameObject? = null, speed: Double = Grid.cellSize * 1.5) : super(gc) {
+        x = Grid.mapFromGrid(gridX)
+        y = Grid.mapFromGrid(gridY)
         this.target = target
         this.speed = speed
     }
 
-    override fun render(gc: GraphicsContext) {
+    override fun render() {
         gc.fill = Color.GRAY
         gc.fillRect(x, y, width, height)
     }
@@ -55,24 +57,25 @@ class Junker : IGameObject {
                 dx *= speed / FPS
                 dy *= speed / FPS
 
-                var newx: Double
-                var newy: Double
+                val newX: Double
+                val newY: Double
 
                 if (gridx.toInt() != Grid.mapToGrid(x + dx).toInt() && gridx % 1.0 != 0.0)
-                    newx = Grid.mapFromGrid(floor(Grid.mapToGrid(x + dx) + 0.5))
+                    newX = Grid.mapFromGrid(floor(Grid.mapToGrid(x + dx) + 0.5))
                 else
-                    newx = x + dx
-                if (gridy.toInt() != Grid.mapToGrid(y + dy).toInt() && gridy % 1.0 != 0.0)
-                    newy = Grid.mapFromGrid(floor(Grid.mapToGrid(y + dy) + 0.5))
-                else
-                    newy = y + dy
+                    newX = x + dx
 
-                moveOnGrid(newx, newy, grid.map)
+                if (gridy.toInt() != Grid.mapToGrid(y + dy).toInt() && gridy % 1.0 != 0.0)
+                    newY = Grid.mapFromGrid(floor(Grid.mapToGrid(y + dy) + 0.5))
+                else
+                    newY = y + dy
+
+                moveOnGrid(newX, newY, GameLevel.grid.map)
             }
         }
 
-        if (this.collidesWith(player)) {
-            player.dead = true
+        if (this.collidesWith(GameLevel.player)) {
+            GameLevel.player.dead = true
         }
     }
 }

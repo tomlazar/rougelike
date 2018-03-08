@@ -1,11 +1,12 @@
-package games.support
+package games.support.interfaces
 
 import games.rougelike.BackgroundObject
+import games.support.Grid
 import javafx.geometry.BoundingBox
 import javafx.scene.canvas.GraphicsContext
 import kotlin.math.*
 
-abstract class IGameObject {
+abstract class IGameObject(val gc: GraphicsContext){
 
     abstract var height: Double
     abstract var width: Double
@@ -26,7 +27,7 @@ abstract class IGameObject {
         return getBoundingBox().intersects(other.getBoundingBox())
     }
 
-    abstract fun render(gc: GraphicsContext)
+    abstract fun render()
     abstract fun update()
 
     fun moveOnGrid(newx: Double, newy: Double, grid: Array<Array<BackgroundObject>>): Boolean {

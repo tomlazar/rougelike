@@ -1,20 +1,27 @@
 package games.rougelike
 
+import games.support.LevelManager
+import games.support.interfaces.IGameObject
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
 import kotlin.math.roundToInt
 
-class HUD {
+class HUD(gc: GraphicsContext) : IGameObject(gc) {
+    override var width = 0.0
+    override var x = 0.0
+    override var y = 0.0
+    override var height = 0.0
+
     companion object {
-        const val WIDTH = GAME_WIDTH
-        const val HEIGHT = 40.0
+        val WIDTH = LevelManager.current.WIDTH
+        val HEIGHT = 40.0
 
         const val MAX_CORRUPTION = 10
         var corruption = 6.45
         var score = 0.0
     }
 
-    fun render(gc: GraphicsContext) {
+    override fun render() {
         gc.fill = Color.BLACK
         gc.fillRect(0.0, 0.0, WIDTH, HEIGHT)
 
@@ -23,7 +30,7 @@ class HUD {
         var current = sep
 
         gc.fill = Color.RED
-        for(i in 0..Math.floor(corruption).roundToInt()) {
+        for (i in 0..Math.floor(corruption).roundToInt()) {
             gc.fillRect(current, 2.0, barWidth, 36.0)
             current += sep + barWidth
         }
@@ -32,7 +39,6 @@ class HUD {
         gc.fillRect(current, 2.0, barWidth * remainder, 36.0)
     }
 
-    fun update() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun update() {
     }
 }

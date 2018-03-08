@@ -4,7 +4,7 @@ import games.rougelike.BackgroundObject
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
 
-class Grid {
+class Grid(val gc: GraphicsContext) {
 
     companion object {
         val mapWidth = 15
@@ -20,10 +20,13 @@ class Grid {
         }
     }
 
-    val map    = Array(mapWidth, { x ->  Array(mapHeight, { y ->
-        BackgroundObject(if (x in 5 until 10 && y in 5 until 15) BackgroundObject.BackgroundType.GAP else BackgroundObject.BackgroundType.FLOOR) }) })
+    val map = Array(mapWidth, { x ->
+        Array(mapHeight, { y ->
+            BackgroundObject(if (x in 5 until 10 && y in 5 until 15) BackgroundObject.BackgroundType.GAP else BackgroundObject.BackgroundType.FLOOR)
+        })
+    })
 
-    fun render(gc: GraphicsContext) {
+    fun render() {
         gc.fill = Color.BLUE
 
         for ((x, xarr) in map.withIndex()) {
