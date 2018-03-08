@@ -59,11 +59,11 @@ class Junker : IGameObject {
                 var newy: Double
 
                 if (gridx.toInt() != Grid.mapToGrid(x + dx).toInt() && gridx % 1.0 != 0.0)
-                    newx = Grid.mapFromGrid(floor(Grid.mapToGrid(x + dx) + 0.5))
+                    newx = Grid.mapFromGrid(round(Grid.mapToGrid(x + dx)))
                 else
                     newx = x + dx
                 if (gridy.toInt() != Grid.mapToGrid(y + dy).toInt() && gridy % 1.0 != 0.0)
-                    newy = Grid.mapFromGrid(floor(Grid.mapToGrid(y + dy) + 0.5))
+                    newy = Grid.mapFromGrid(round(Grid.mapToGrid(y + dy)))
                 else
                     newy = y + dy
 

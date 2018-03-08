@@ -8,7 +8,7 @@ class Grid {
 
     companion object {
         val mapWidth = 15
-        val mapHeight = 40
+        val mapHeight = 20
         val cellSize = 40.0
 
         fun mapToGrid(x: Double): Double {
@@ -21,7 +21,7 @@ class Grid {
     }
 
     val map    = Array(mapWidth, { x ->  Array(mapHeight, { y ->
-        BackgroundObject(if (x in 5 until 10 && y in 5 until 15) BackgroundObject.BackgroundType.GAP else BackgroundObject.BackgroundType.FLOOR) }) })
+        BackgroundObject(if (x in 5 until 6 && y in 5 until 15) BackgroundObject.BackgroundType.GAP else BackgroundObject.BackgroundType.FLOOR) }) })
 
     fun render(gc: GraphicsContext) {
         gc.fill = Color.BLUE

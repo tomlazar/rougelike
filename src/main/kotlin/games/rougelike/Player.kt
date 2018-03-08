@@ -19,7 +19,7 @@ class Player : IGameObject() {
 
     override fun render(gc: GraphicsContext) {
         gc.fill = Color.PEACHPUFF
-        gc.fillOval(x, y, width, height)
+        gc.fillRect(x, y, width, height)
     }
 
     val speed = Grid.cellSize * 2
