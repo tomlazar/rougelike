@@ -55,7 +55,6 @@ class GameLevel : ILevel() {
         // add objects to list
         listOf(hud, player, camera).forEach { o: IGameObject -> gameObjects.add(o) }
 
-
         // create evil bots
         for (i in 1..4)
             gameObjects.add(
@@ -73,6 +72,7 @@ class GameLevel : ILevel() {
 
         // add events
         keybank.addEvents(scene)
+        player.addEvents(gameScene.scene)
 
         // set up update
         val kf = KeyFrame(Duration(1000 / FPS), EventHandler { update(); render() })

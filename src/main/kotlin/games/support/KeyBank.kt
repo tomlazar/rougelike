@@ -20,12 +20,12 @@ class KeyBank : IController {
         return keyDown[code]!!
     }
 
-    override fun addEvents(scene: Scene) {
-        scene.setOnKeyPressed({ event: KeyEvent? ->
+    override fun addEvents(target: Scene) {
+        target.setOnKeyPressed({ event: KeyEvent? ->
             val c = event!!.code
             keyDown[c] = true
         })
-        scene.setOnKeyReleased({ event: KeyEvent? ->
+        target.setOnKeyReleased({ event: KeyEvent? ->
             val c = event!!.code
             keyDown[c] = false
         })
