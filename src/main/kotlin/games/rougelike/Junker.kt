@@ -47,7 +47,7 @@ class Junker : IGameObject {
                     dy += (if (target!!.gridy.toInt() <= gridy) -1.0 else 1.0)
                 } else {
                     // move anywhere
-                    if (Random().nextBoolean()) {
+                    if ((Random().nextBoolean() && abs(target!!.gridx - gridx) >= 1) || abs(target!!.gridy - gridy) < 1) {
                         dx += (if (target!!.gridx.toInt() <= gridx) -1.0 else 1.0)
                     } else {
                         dy += (if (target!!.gridy.toInt() <= gridy) -1.0 else 1.0)
@@ -57,16 +57,16 @@ class Junker : IGameObject {
                 dx *= speed / FPS
                 dy *= speed / FPS
 
-                val newX: Double
-                val newY: Double
+                var newX: Double
+                var newY: Double
 
                 if (gridx.toInt() != Grid.mapToGrid(x + dx).toInt() && gridx % 1.0 != 0.0)
-                    newX = Grid.mapFromGrid(floor(Grid.mapToGrid(x + dx) + 0.5))
+                    newX = Grid.mapFromGrid(round(Grid.mapToGrid(x + dx)))
                 else
                     newX = x + dx
 
                 if (gridy.toInt() != Grid.mapToGrid(y + dy).toInt() && gridy % 1.0 != 0.0)
-                    newY = Grid.mapFromGrid(floor(Grid.mapToGrid(y + dy) + 0.5))
+                    newY = Grid.mapFromGrid(round(Grid.mapToGrid(y + dy)))
                 else
                     newY = y + dy
 

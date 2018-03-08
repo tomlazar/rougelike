@@ -9,17 +9,16 @@ import javafx.scene.paint.Color
 
 class Player(gc: GraphicsContext) : IGameObject(gc) {
     val radius = 15.0
-    val speed = Grid.cellSize * 2
+    val speed = Grid.cellSize * 4
 
     override var height: Double = radius * 2
     override var width: Double = radius * 2
     override var x: Double = 0.0
-
     override var y: Double = 0.0
 
     override fun render() {
         gc.fill = Color.PEACHPUFF
-        gc.fillOval(x, y, width, height)
+        gc.fillRect(x, y, width, height)
     }
 
     override fun update() {
