@@ -28,7 +28,6 @@ class Player : IGameObject() {
         val dx = speed / FPS * keybank.keyNegPos(key_left, key_right)
         val dy = speed / FPS * keybank.keyNegPos(key_up, key_down)
 
-        x += dx
-        y += dy
+        moveOnGrid(x + dx, y + dy, grid.map)
     }
 }

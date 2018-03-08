@@ -5,10 +5,7 @@ import games.support.IGameObject
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
 import java.util.*
-import kotlin.math.abs
-import kotlin.math.floor
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 class Junker : IGameObject {
     val radius = Grid.cellSize / 2
@@ -17,13 +14,10 @@ class Junker : IGameObject {
     override var x: Double
     override var y: Double
 
-    val gridx get() = Grid.mapToGrid(x)
-    val gridy get() = Grid.mapToGrid(y)
+    var target: IGameObject?
+    var speed: Double
 
-    var target : IGameObject?
-    var speed : Double
-
-    constructor (gridx: Double, gridy: Double, target : IGameObject? = null, speed : Double = Grid.cellSize * 1.5) {
+    constructor (gridx: Double, gridy: Double, target: IGameObject? = null, speed: Double = Grid.cellSize * 1.5) {
         x = Grid.mapFromGrid(gridx)
         y = Grid.mapFromGrid(gridy)
         this.target = target
@@ -45,32 +39,35 @@ class Junker : IGameObject {
 
                 if (gridx % 1.0 != 0.0) {
                     // moving on x-axis
-                    dx += (if (Grid.mapToGrid(target!!.x).toInt() <= gridx) -1.0 else 1.0)
+                    dx += (if (target!!.gridx.toInt() <= gridx) -1.0 else 1.0)
                 } else if (gridy % 1.0 != 0.0) {
                     // moving on y-axis
-                    dy += (if (Grid.mapToGrid(target!!.y).toInt() <= gridy) -1.0 else 1.0)
+                    dy += (if (target!!.gridy.toInt() <= gridy) -1.0 else 1.0)
                 } else {
                     // move anywhere
-                    //if (abs(target!!.x - x) > abs(target!!.y - y)) {
                     if (Random().nextBoolean()) {
-                        dx += (if (Grid.mapToGrid(target!!.x).toInt() <= gridx) -1.0 else 1.0)
+                        dx += (if (target!!.gridx.toInt() <= gridx) -1.0 else 1.0)
                     } else {
-                        dy += (if (Grid.mapToGrid(target!!.y).toInt() <= gridy) -1.0 else 1.0)
+                        dy += (if (target!!.gridy.toInt() <= gridy) -1.0 else 1.0)
                     }
                 }
 
                 dx *= speed / FPS
                 dy *= speed / FPS
 
-                if (dx != 0.0 && Grid.mapToGrid(x).toInt() != Grid.mapToGrid(x + dx).toInt() && Grid.mapToGrid(x) % 1.0 != 0.0)
-                    x = Grid.mapFromGrid(floor(Grid.mapToGrid(x + dx) + 0.5))
-                else
-                    x += dx
+                var newx: Double
+                var newy: Double
 
-                if (dy != 0.0 && Grid.mapToGrid(y).toInt() != Grid.mapToGrid(y + dy).toInt() && Grid.mapToGrid(y) % 1.0 != 0.0)
-                    y = Grid.mapFromGrid(floor(Grid.mapToGrid(y + dy) + 0.5))
+                if (gridx.toInt() != Grid.mapToGrid(x + dx).toInt() && gridx % 1.0 != 0.0)
+                    newx = Grid.mapFromGrid(floor(Grid.mapToGrid(x + dx) + 0.5))
                 else
-                    y += dy
+                    newx = x + dx
+                if (gridy.toInt() != Grid.mapToGrid(y + dy).toInt() && gridy % 1.0 != 0.0)
+                    newy = Grid.mapFromGrid(floor(Grid.mapToGrid(y + dy) + 0.5))
+                else
+                    newy = y + dy
+
+                moveOnGrid(newx, newy, grid.map)
             }
         }
 
