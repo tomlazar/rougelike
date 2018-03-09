@@ -9,11 +9,12 @@ val key_left = KeyCode.A
 val key_right = KeyCode.D
 val key_up = KeyCode.W
 val key_down = KeyCode.S
+val key_hack = KeyCode.SPACE
 
 val key_zoom_in = KeyCode.Q
 val key_zoom_out = KeyCode.E
 
-val key_hack = KeyCode.SPACE
+val key_spawnJunker = KeyCode.J
 
 class KeyBank : IController {
     private val keyDown = hashMapOf(*KeyCode.values().map({ k -> Pair(k, false) }).toTypedArray())
@@ -35,5 +36,14 @@ class KeyBank : IController {
 
     fun keyNegPos(neg: KeyCode, pos: KeyCode): Double {
         return (if (isKeyDown(neg)) -1.0 else 0.0) + (if (isKeyDown(pos)) 1.0 else 0.0)
+    }
+
+    companion object {
+        fun makeKeyListener(key: KeyCode, action: () -> Unit): (KeyEvent?) -> Unit {
+            return { event: KeyEvent? ->
+                if (event!!.code == key)
+                    action.invoke()
+            }
+        }
     }
 }

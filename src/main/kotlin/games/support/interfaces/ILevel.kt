@@ -11,6 +11,10 @@ abstract class ILevel {
     protected var controllers = mutableListOf<IController>()
     protected var addLaterQueue = mutableListOf<IGameObject>()
 
+    fun addLater(o: IGameObject) {
+        addLaterQueue.add(o)
+    }
+
     abstract fun buildScene(stage: Stage?)
 
     open fun render() {
@@ -30,7 +34,11 @@ abstract class ILevel {
         })
 
         addLaterQueue.forEach { o: IGameObject -> gameObjects.add(o) }
+        addLaterQueue.map { o: IGameObject -> o as? IController }
+                .filter { c: IController? -> c != null }
+                .forEach { c: IController? -> controllers.add(c!!) }
         addLaterQueue.clear()
 
-        removeLaterQueue.forEach { o: IGameObject -> gameObjects.remove(o) }    }
+        removeLaterQueue.forEach { o: IGameObject -> gameObjects.remove(o) }
+    }
 }

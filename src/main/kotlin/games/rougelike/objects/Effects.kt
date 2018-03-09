@@ -2,11 +2,12 @@ package games.rougelike.objects
 
 import games.rougelike.FPS
 import games.rougelike.levels.GameLevel
+import games.support.*
 import games.support.interfaces.IController
 import games.support.interfaces.IGameObject
-import games.support.key_hack
 import javafx.scene.Scene
 import javafx.scene.canvas.GraphicsContext
+import javafx.scene.input.KeyEvent
 import javafx.scene.paint.Color
 
 class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
@@ -16,9 +17,23 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     override var y = 0.0
 
     override fun addEvents(target: Scene) {
-
+        target.addEventHandler(KeyEvent.KEY_PRESSED, KeyBank.makeKeyListener(key_spawnJunker, {
+            val junker = Junker(gc, Grid.mapToGrid(GameLevel.mousebank.mouseX),
+                    Grid.mapToGrid(GameLevel.mousebank.mouseY), target = GameLevel.player)
+            LevelManager.current.addLater(junker)
+            junker.addEvents(target)
+        }))
     }
 
+    override fun render() {
+        render_hackEffect()
+    }
+
+    override fun update() {
+        update_hackEffect()
+    }
+
+    // region Hack Effect
     enum class HackEffect(val duration: Double) {
         INACTIVE(0.0), WAITING(0.15 * FPS), ACTIVE(0.1 * FPS);
 
@@ -35,7 +50,7 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     var hackEffectCounter = 0
     val hackEffectWeight = 5.0
 
-    override fun render() {
+    fun render_hackEffect() {
         if (hackEffectState == HackEffect.ACTIVE) {
             gc.lineWidth = hackEffectWeight * (1.0 - hackEffectCounter / hackEffectState.duration)
             gc.stroke = Color.SKYBLUE
@@ -44,9 +59,9 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
         }
     }
 
-    override fun update() {
+    fun update_hackEffect() {
         val hacking = GameLevel.keybank.isKeyDown(key_hack) && Junker.targetedJunker != null
-        if (hacking)
+        if (hacking && hackEffectState == HackEffect.ACTIVE)
             Junker.targetedJunker!!.hackingProgress += 1
 
         hackEffectCounter += 1
@@ -61,4 +76,6 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
             }
         }
     }
+    // endregion
+
 }

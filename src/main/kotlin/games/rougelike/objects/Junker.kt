@@ -36,13 +36,14 @@ class Junker : IGameObject, IController {
     }
     private val isBeingTargeted get() = this == targetedJunker
     var hackingProgress = 0.0
-    val hackTime = 1.5 * FPS
+    val hackTime = 1.5 * FPS * (Effects.HackEffect.ACTIVE.duration / (Effects.HackEffect.ACTIVE.duration + Effects.HackEffect.WAITING.duration))
 
     constructor (gc: GraphicsContext, gridX: Double, gridY: Double, target: IGameObject? = null, speed: Double = Grid.cellSize * 1.5) : super(gc) {
         x = Grid.mapFromGrid(gridX)
         y = Grid.mapFromGrid(gridY)
         this.target = target
         this.speed = speed
+        println("Built junker")
     }
 
     override fun addEvents(target: Scene) {
