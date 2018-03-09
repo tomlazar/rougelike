@@ -2,15 +2,20 @@ package games.rougelike.objects
 
 import games.rougelike.FPS
 import games.rougelike.levels.GameLevel
-import games.support.Grid
+import games.support.*
+import games.support.interfaces.IController
 import games.support.interfaces.IGameObject
+import javafx.scene.Scene
 import javafx.scene.canvas.GraphicsContext
+import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
+import javafx.scene.shape.ArcType
 import java.util.*
 import kotlin.math.*
 
 @Suppress("ConvertSecondaryConstructorToPrimary")
-class Junker : IGameObject {
+class Junker : IGameObject, IController {
+    // Junker is the superclass to all basic enemies
 
     private val radius = Grid.cellSize / 2
     override var height = radius * 2
@@ -21,6 +26,18 @@ class Junker : IGameObject {
     private var target: IGameObject?
     private var speed: Double
 
+    companion object {
+        var targetedJunker: Junker? = null
+        fun switchTargetedJunker(j: Junker?) {
+            if (targetedJunker != null)
+                targetedJunker!!.hackingProgress = 0.0
+            targetedJunker = j
+        }
+    }
+    private val isBeingTargeted get() = this == targetedJunker
+    var hackingProgress = 0.0
+    val hackTime = 1.5 * FPS
+
     constructor (gc: GraphicsContext, gridX: Double, gridY: Double, target: IGameObject? = null, speed: Double = Grid.cellSize * 1.5) : super(gc) {
         x = Grid.mapFromGrid(gridX)
         y = Grid.mapFromGrid(gridY)
@@ -28,12 +45,38 @@ class Junker : IGameObject {
         this.speed = speed
     }
 
+    override fun addEvents(target: Scene) {
+        target.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseBank.makeButtonListener(button_setTarget, this, { switchTargetedJunker(this) }))
+    }
+
     override fun render() {
         gc.fill = Color.GRAY
         gc.fillRect(x, y, width, height)
+
+        val targetSymbolRadius = radius * sqrt(2.0) + 4
+        gc.stroke = Color.DARKRED
+        if (isBeingTargeted) {
+            gc.strokeOval(x + radius - targetSymbolRadius, y + radius - targetSymbolRadius, targetSymbolRadius * 2, targetSymbolRadius * 2)
+        }
+        gc.lineWidth *= 3
+        gc.strokeArc(x + radius - targetSymbolRadius, y + radius - targetSymbolRadius, targetSymbolRadius * 2, targetSymbolRadius * 2,
+                90 - 180 * (hackingProgress / hackTime), 360 * (hackingProgress / hackTime), ArcType.OPEN)
     }
 
     override fun update() {
+        update_Move()
+
+        if (hackingProgress >= hackTime)
+            this.kill()
+
+        if (this.collidesWith(GameLevel.player)) {
+            GameLevel.player.hit(1)
+        }
+    }
+
+    private fun update_Move() {
+        // track the target, moving along the grid
+
         if (target != null) {
             if (target!!.dead)
                 target = null
@@ -75,11 +118,11 @@ class Junker : IGameObject {
                 moveOnGrid(newX, newY, GameLevel.grid.map)
             }
         }
+    }
 
-        if (GameLevel.player.immune == 0 && this.collidesWith(GameLevel.player)) {
-            GameLevel.player.immune = FPS.toInt() / 2
-
-            HUD.corruption += 1
-        }
+    fun kill() {
+        this.dead = true
+        if (targetedJunker == this)
+            switchTargetedJunker(null)
     }
 }

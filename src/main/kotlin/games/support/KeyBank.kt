@@ -13,6 +13,8 @@ val key_down = KeyCode.S
 val key_zoom_in = KeyCode.Q
 val key_zoom_out = KeyCode.E
 
+val key_hack = KeyCode.SPACE
+
 class KeyBank : IController {
     private val keyDown = hashMapOf(*KeyCode.values().map({ k -> Pair(k, false) }).toTypedArray())
 
@@ -21,11 +23,11 @@ class KeyBank : IController {
     }
 
     override fun addEvents(target: Scene) {
-        target.setOnKeyPressed({ event: KeyEvent? ->
+        target.addEventHandler(KeyEvent.KEY_PRESSED, { event: KeyEvent? ->
             val c = event!!.code
             keyDown[c] = true
         })
-        target.setOnKeyReleased({ event: KeyEvent? ->
+        target.addEventHandler(KeyEvent.KEY_RELEASED, { event: KeyEvent? ->
             val c = event!!.code
             keyDown[c] = false
         })

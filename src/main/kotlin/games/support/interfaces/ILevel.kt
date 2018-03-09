@@ -14,7 +14,11 @@ abstract class ILevel {
     abstract fun buildScene(stage: Stage?)
 
     open fun render() {
-        gameObjects.map { c: IGameObject -> c.render() }
+        gameObjects.forEach({ c: IGameObject ->
+            c.gc.save()
+            c.render()
+            c.gc.restore()
+        })
     }
 
     open fun update() {

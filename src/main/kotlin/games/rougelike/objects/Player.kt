@@ -20,12 +20,21 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     override var y: Double = 0.0
 
     var immune = 0
+    val immuneTime = (FPS / 2).toInt()
 
     override fun addEvents(target: Scene) {}
 
     override fun render() {
         gc.fill = Color.PEACHPUFF
         gc.fillRect(x, y, width, height)
+    }
+
+    fun hit(amount: Int) {
+        if (GameLevel.player.immune == 0) {
+            GameLevel.player.immune = immuneTime
+
+            HUD.corruption += amount
+        }
     }
 
     override fun update() {

@@ -1,10 +1,12 @@
 package games.rougelike.levels
 
 import games.rougelike.FPS
+import games.rougelike.objects.Effects
 import games.rougelike.objects.HUD
 import games.rougelike.objects.Junker
 import games.rougelike.objects.Player
 import games.support.*
+import games.support.interfaces.IController
 import games.support.interfaces.IGameObject
 import games.support.interfaces.ILevel
 import javafx.animation.Animation
@@ -30,6 +32,7 @@ class GameLevel : ILevel() {
 
         lateinit var player: Player
         lateinit var hud: HUD
+        lateinit var effects: Effects
         lateinit var grid: Grid
         lateinit var camera: TrackingCamera
 
@@ -45,25 +48,14 @@ class GameLevel : ILevel() {
         val gameScene = SubScene(Group(gameCanvas), WIDTH, HEIGHT)
         player = Player(gameCanvas.graphicsContext2D)
         camera = TrackingCamera(gameCanvas.graphicsContext2D, player)
-        grid = Grid(gameCanvas.graphicsContext2D)
         gameScene.camera = camera.sceneCamera
+        grid = Grid(gameCanvas.graphicsContext2D)
+        effects = Effects(gameCanvas.graphicsContext2D)
 
         // Create the hud window
         val hudCanvas = Canvas(HUD.WIDTH, HUD.HEIGHT)
         val gameHud = SubScene(VBox(hudCanvas), HUD.WIDTH, HUD.HEIGHT)
         hud = HUD(hudCanvas.graphicsContext2D)
-
-        // add objects to list
-        listOf(hud, player, camera).forEach { o: IGameObject -> gameObjects.add(o) }
-
-        // create evil bots
-        for (i in 1..4)
-            gameObjects.add(
-                    Junker(gameCanvas.graphicsContext2D,
-                            (5 + (Random().nextInt(Grid.mapWidth - 5))).toDouble(),
-                            (5 + (Random().nextInt(Grid.mapHeight - 5))).toDouble(),
-                            if (i <= 2) player else gameObjects.last(),
-                            Grid.cellSize * (Random().nextDouble() + (if (i <= 2) 2.0 else 0.5))))
 
         // finialize layout
         val layout = VBox(gameHud, gameScene)
@@ -71,9 +63,22 @@ class GameLevel : ILevel() {
         val scene = Scene(layout)
         stage.scene = scene
 
+        // create evil bots
+        for (i in 1..4) {
+            var junker = Junker(gameCanvas.graphicsContext2D,
+                    (5 + (Random().nextInt(Grid.mapWidth - 5))).toDouble(),
+                    (5 + (Random().nextInt(Grid.mapHeight - 5))).toDouble(),
+                    if (i <= 2) player else gameObjects.last(),
+                    Grid.cellSize * (Random().nextDouble() + (if (i <= 2) 2.0 else 0.5)))
+            gameObjects.add(junker)
+            junker.addEvents(gameScene.scene)
+        }
+
+        // add objects to list
+        listOf(hud, effects, player, camera).forEach { o: IGameObject -> gameObjects.add(o) }
+
         // add events
-        keybank.addEvents(scene)
-        mousebank.addEvents(scene)
+        listOf(keybank, mousebank, effects).forEach { c: IController -> c.addEvents(scene) }
         player.addEvents(gameScene.scene)
 
         // set up update
