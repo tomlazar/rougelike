@@ -34,6 +34,7 @@ class GameLevel : ILevel() {
         lateinit var camera: TrackingCamera
 
         val keybank = KeyBank()
+        val mousebank = MouseBank()
     }
 
     override fun buildScene(stage: Stage?) {
@@ -72,6 +73,7 @@ class GameLevel : ILevel() {
 
         // add events
         keybank.addEvents(scene)
+        mousebank.addEvents(scene)
         player.addEvents(gameScene.scene)
 
         // set up update
