@@ -1,5 +1,6 @@
 package games.rougelike
 
+import games.rougelike.levels.GameLevel
 import games.support.LevelManager
 import games.support.interfaces.IGameObject
 import javafx.scene.canvas.GraphicsContext
@@ -16,8 +17,8 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
         val WIDTH = LevelManager.current.WIDTH
         val HEIGHT = 40.0
 
-        const val MAX_CORRUPTION = 10
-        var corruption = 6.45
+        const val MAX_CORRUPTION = 5
+        var corruption = 0.0
         var score = 0.0
     }
 
@@ -31,14 +32,21 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
 
         gc.fill = Color.RED
         for (i in 0..Math.floor(corruption).roundToInt()) {
+            if(i == 0)
+                continue
             gc.fillRect(current, 2.0, barWidth, 36.0)
             current += sep + barWidth
         }
 
-        val remainder = corruption % 1
-        gc.fillRect(current, 2.0, barWidth * remainder, 36.0)
+        if(corruption > 0) {
+            val remainder = corruption % 1
+            gc.fillRect(current, 2.0, barWidth * remainder, 36.0)
+        }
     }
 
     override fun update() {
+        if (corruption >= MAX_CORRUPTION) {
+            GameLevel.player.dead = true
+        }
     }
 }

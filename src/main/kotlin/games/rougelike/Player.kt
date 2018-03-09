@@ -20,6 +20,8 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     override var x: Double = 0.0
     override var y: Double = 0.0
 
+    var immune = 0
+
     override fun addEvents(target: Scene) {}
 
     override fun render() {
@@ -28,6 +30,10 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     }
 
     override fun update() {
+        if(immune >0 ){
+            immune -= 1
+        }
+
         val dx = speed / FPS * GameLevel.keybank.keyNegPos(key_left, key_right)
         val dy = speed / FPS * GameLevel.keybank.keyNegPos(key_up, key_down)
 

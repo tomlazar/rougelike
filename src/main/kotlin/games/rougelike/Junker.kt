@@ -10,6 +10,7 @@ import kotlin.math.*
 
 @Suppress("ConvertSecondaryConstructorToPrimary")
 class Junker : IGameObject {
+
     private val radius = Grid.cellSize / 2
     override var height = radius * 2
     override var width = radius * 2
@@ -74,8 +75,10 @@ class Junker : IGameObject {
             }
         }
 
-        if (this.collidesWith(GameLevel.player)) {
-            GameLevel.player.dead = true
+        if (GameLevel.player.immune == 0 && this.collidesWith(GameLevel.player)) {
+            GameLevel.player.immune = FPS.toInt() / 2
+
+            HUD.corruption += 1
         }
     }
 }
