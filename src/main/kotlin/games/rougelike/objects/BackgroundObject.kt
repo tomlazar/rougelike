@@ -1,4 +1,4 @@
-package games.rougelike
+package games.rougelike.objects
 
 import games.support.Grid
 import javafx.scene.canvas.GraphicsContext

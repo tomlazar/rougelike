@@ -1,6 +1,6 @@
 package games.support
 
-import games.rougelike.BackgroundObject
+import games.rougelike.objects.BackgroundObject
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
 

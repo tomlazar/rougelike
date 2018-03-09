@@ -1,14 +1,13 @@
-package games.rougelike
+package games.rougelike.objects
 
+import games.rougelike.FPS
 import games.rougelike.levels.GameLevel
 import games.support.Grid
 import games.support.interfaces.IGameObject
 import games.support.*
 import games.support.interfaces.IController
-import javafx.geometry.Point2D
 import javafx.scene.Scene
 import javafx.scene.canvas.GraphicsContext
-import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 
 class Player(gc: GraphicsContext) : IGameObject(gc), IController {

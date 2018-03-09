@@ -1,6 +1,6 @@
 package games.support.interfaces
 
-import games.rougelike.BackgroundObject
+import games.rougelike.objects.BackgroundObject
 import games.support.Grid
 import javafx.geometry.BoundingBox
 import javafx.scene.canvas.GraphicsContext

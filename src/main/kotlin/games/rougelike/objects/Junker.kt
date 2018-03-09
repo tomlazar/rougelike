@@ -1,5 +1,6 @@
-package games.rougelike
+package games.rougelike.objects
 
+import games.rougelike.FPS
 import games.rougelike.levels.GameLevel
 import games.support.Grid
 import games.support.interfaces.IGameObject

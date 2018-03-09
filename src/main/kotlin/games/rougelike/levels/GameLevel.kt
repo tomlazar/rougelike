@@ -1,9 +1,9 @@
 package games.rougelike.levels
 
 import games.rougelike.FPS
-import games.rougelike.HUD
-import games.rougelike.Junker
-import games.rougelike.Player
+import games.rougelike.objects.HUD
+import games.rougelike.objects.Junker
+import games.rougelike.objects.Player
 import games.support.*
 import games.support.interfaces.IGameObject
 import games.support.interfaces.ILevel

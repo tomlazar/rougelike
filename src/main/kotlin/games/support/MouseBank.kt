@@ -1,10 +1,9 @@
 package games.support
 
-import games.rougelike.HUD
+import games.rougelike.objects.HUD
 import games.rougelike.levels.GameLevel
 import games.support.interfaces.IController
 import javafx.scene.Scene
-import javafx.scene.input.KeyCode
 import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 
