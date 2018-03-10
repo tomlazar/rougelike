@@ -45,7 +45,7 @@ class GameLevel : ILevel() {
         val map = Util.transpose(CsvReader.readCsv("Level3.csv"))
                 .map {row: Array<String> ->
                     row.map { cell: String ->
-                        BackgroundObject(BackgroundObject.BackgroundType.fromId(cell.toInt()))
+                        BackgroundObject.fromCode(cell)
                     }.toTypedArray()
                 }.toTypedArray()
         val gameCanvas = Canvas(Grid.mapFromGrid(map.size.toDouble()), Grid.mapFromGrid(map[0].size.toDouble()))

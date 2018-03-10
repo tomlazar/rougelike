@@ -16,8 +16,8 @@ abstract class IGameObject(val gc: GraphicsContext) {
     abstract var x: Double
     abstract var y: Double
 
-    val cx get() = x + width/2
-    val cy get() = y + height/2
+    val cx get() = x + width / 2
+    val cy get() = y + height / 2
 
     val gridx get() = Grid.mapToGrid(x)
     val gridy get() = Grid.mapToGrid(y)
@@ -54,13 +54,16 @@ abstract class IGameObject(val gc: GraphicsContext) {
     abstract fun render()
     abstract fun update()
 
+    fun intersectingGridSquares(grid: Array<Array<BackgroundObject>>, x: Double = this.x, y: Double = this.y): List<BackgroundObject> {
+        return Util.integersInRange(max(0.0, Grid.mapToGrid(x)), min(grid.size.toDouble(), Grid.mapToGrid(x + width))).map { gx ->
+            Util.integersInRange(max(0.0, Grid.mapToGrid(y)), min(grid.size.toDouble(), Grid.mapToGrid(y + height))).map { gy ->
+                grid[gx][gy]
+            }
+        }.flatten()
+    }
+
     fun moveOnGrid(newx: Double, newy: Double, grid: Array<Array<BackgroundObject>>, slide: Boolean = true): Boolean {
-        val newPositionTraversable =
-                Util.integersInRange(max(0.0, Grid.mapToGrid(newx)), min(grid.size.toDouble(), Grid.mapToGrid(newx + width))).asSequence().all { gx ->
-                    Util.integersInRange(max(0.0, Grid.mapToGrid(newy)), min(grid.size.toDouble(), Grid.mapToGrid(newy + height))).asSequence().all { gy ->
-                        grid[gx][gy].type.traversable
-                    }
-                }
+        val newPositionTraversable = intersectingGridSquares(grid, newx, newy).all { o: BackgroundObject -> o.type.traversable }
 
         return when {
             newPositionTraversable -> {
