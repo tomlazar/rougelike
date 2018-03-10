@@ -31,7 +31,7 @@ class GameLevel : ILevel() {
         val mousebank = MouseBank()
 
         const val NAME: String = ""
-        val LEVEL_REGEX = "Level([0-9]+)\\.csv".toRegex()
+        val LEVEL_REGEX = "Level([^\\.]+)\\.csv".toRegex()
 
         val levels = File(".").listFiles().filter { f: File -> f.isFile && LEVEL_REGEX.matches(f.name) }.map { f: File ->
             val it = GameLevel()
@@ -39,14 +39,14 @@ class GameLevel : ILevel() {
             it
         }
 
-        fun getLevel(id: Int) = levels.find { l: GameLevel -> l.levelId == id }
+        fun getLevel(id: String) = levels.find { l: GameLevel -> l.levelId.equals(id) }
     }
 
-    var levelId: Int = -1
+    var levelId: String = ""
 
     fun build(gridfile: String) {
         // Create the main game window
-        levelId = LEVEL_REGEX.matchEntire(gridfile)!!.groupValues[1].toInt()
+        levelId = LEVEL_REGEX.matchEntire(gridfile)!!.groupValues[1]
         val map = Util.transpose(CsvReader.readCsv(gridfile))
                 .map { row: Array<String> ->
                     row.map { cell: String ->
@@ -86,13 +86,16 @@ class GameLevel : ILevel() {
                             if (gridcell.isShieldJunkerSpawn)
                                 ShieldJunker(gameCanvas.graphicsContext2D,
                                         gridx.toDouble(), gridy.toDouble(),
-                                        player, speed)
+                                        player, speed / 3)
                             else Junker(gameCanvas.graphicsContext2D,
                                     gridx.toDouble(), gridy.toDouble(),
                                     player, speed)
 
                     gameObjects.add(junker)
                     junker.addEvents(gameScene.scene)
+                }
+                if (gridcell.equipmentSpawn != null) {
+                    gameObjects.add(Equipment(gameCanvas.graphicsContext2D, gridx, gridy, gridcell.equipmentSpawn!!))
                 }
             }
         }

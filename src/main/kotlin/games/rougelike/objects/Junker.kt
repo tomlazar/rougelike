@@ -48,7 +48,10 @@ open class Junker : IGameObject, IController {
     }
 
     override fun addEvents(target: Scene) {
-        target.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseBank.makeButtonListener(button_setTarget, this, { switchTargetedJunker(this) }))
+        target.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseBank.makeButtonListener(button_setTarget, this, {
+            if (Equipment.acquiredEquipment[Equipment.EquipmentType.HACK]!!)
+                switchTargetedJunker(this)
+        }))
     }
 
     override fun render() {
@@ -80,7 +83,7 @@ open class Junker : IGameObject, IController {
             this.kill()
 
         if (this.collidesWith(LevelManager.current.player)) {
-            LevelManager.current.player.hit(1)
+            LevelManager.current.player.hit(0.5)
         }
     }
 

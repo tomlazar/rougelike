@@ -7,11 +7,16 @@ import javafx.scene.paint.Color
 class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
     var teleporter: TeleportLocation? = null
-    class TeleportLocation(val level: Int, val gridx: Double, val gridy: Double)
+
+    class TeleportLocation(val level: String, val gridx: Double, val gridy: Double)
 
     var isPlayerSpawn = false
+
     var isJunkerSpawn = false
     var isShieldJunkerSpawn = false
+
+    var equipmentSpawn: Equipment.EquipmentType? = null
+
 
     enum class BackgroundType(var id: Int, var traversable: Boolean, var fill: Color) {
         DEFAULT(-1, true, Color.PINK),
@@ -39,7 +44,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                 val split = property.split('_')
                 when (split[0].toInt()) {
                     0 -> { // teleporter tile
-                        it.teleporter = TeleportLocation(split[1].toInt(), split[2].toDouble(), split[3].toDouble())
+                        it.teleporter = TeleportLocation(split[1], split[2].toDouble(), split[3].toDouble())
                     }
                     1 -> {
                         it.isJunkerSpawn = true
@@ -48,6 +53,12 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                     }
                     2 -> {
                         it.isPlayerSpawn = true
+                    }
+                    3 -> {
+                        when (split[1].toInt()){
+                            0 -> it.equipmentSpawn = Equipment.EquipmentType.HACK
+                            1 -> it.equipmentSpawn = Equipment.EquipmentType.GRENADE
+                        }
                     }
                 }
             }

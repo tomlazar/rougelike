@@ -1,0 +1,40 @@
+package games.rougelike.objects
+
+import games.support.Grid
+import games.support.LevelManager
+import games.support.interfaces.IGameObject
+import javafx.scene.canvas.GraphicsContext
+import javafx.scene.paint.Color
+
+class Equipment(gc: GraphicsContext, gridx: Int, gridy: Int, val type: EquipmentType) : IGameObject(gc) {
+    override var height: Double = Grid.cellSize / 2
+    override var width: Double = Grid.cellSize / 2
+    override var x: Double = Grid.mapFromGrid(gridx.toDouble()) + Grid.cellSize / 2 - width / 2
+    override var y: Double = Grid.mapFromGrid(gridy.toDouble()) + Grid.cellSize / 2 - height / 2
+
+    companion object {
+        val acquiredEquipment = hashMapOf(*EquipmentType.values().map { t -> Pair(t, false) }.toTypedArray())
+
+        init {
+            //acquiredEquipment[EquipmentType.HACK] = true
+        }
+    }
+
+    enum class EquipmentType(val description: String) {
+        HACK("Hack (Mouse1 + Space)"), GRENADE("EMP Emitter (Mouse2)")
+    }
+
+    override fun render() {
+        gc.fill = Color.GOLD
+        gc.fillOval(x, y, width, height)
+    }
+
+    override fun update() {
+        if (this.collidesWith(LevelManager.current.player)) {
+            acquiredEquipment[this.type] = true
+            this.dead = true
+        }
+    }
+
+
+}

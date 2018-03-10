@@ -6,7 +6,9 @@ import games.support.interfaces.IGameObject
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
 import javafx.scene.shape.ArcType
+import kotlin.math.abs
 import kotlin.math.atan2
+import kotlin.math.min
 import kotlin.math.sqrt
 
 class ShieldJunker(gc: GraphicsContext, gridX: Double, gridY: Double, var target: IGameObject? = null, speed: Double = Grid.cellSize * 1.5) : Junker(gc, gridX, gridY, target, speed) {
@@ -22,7 +24,7 @@ class ShieldJunker(gc: GraphicsContext, gridX: Double, gridY: Double, var target
                 val deltaX = target!!.cx - cx
                 val deltaY = target!!.cy - cy
 
-                Math.toDegrees(atan2(deltaY, deltaX))
+                remainder(Math.toDegrees(atan2(deltaY, deltaX)), 360.0)
             } else currentAngle
         }
 
@@ -44,16 +46,33 @@ class ShieldJunker(gc: GraphicsContext, gridX: Double, gridY: Double, var target
     override fun render() {
         super.render()
 
-        gc.stroke = Color.BLUE
-        gc.lineWidth = 4.0
-        gc.strokeArc(cx - shieldRadius, cy - shieldRadius, shieldRadius * 2, shieldRadius * 2, -(currentAngle - shieldArc / 2), -shieldArc, ArcType.OPEN)
-        gc.lineWidth = 1.0
+        if (tracking) {
+            gc.stroke = Color.BLUE
+            gc.lineWidth = 4.0
+            gc.strokeArc(cx - shieldRadius, cy - shieldRadius, shieldRadius * 2, shieldRadius * 2, -(currentAngle - shieldArc / 2), -shieldArc, ArcType.OPEN)
+            gc.lineWidth = 1.0
+        }
     }
+
+    val rotateRate = 55.0 / FPS
 
     override fun update() {
         super.update()
 
-        if (tracking)
+        if (tracking) {
+            currentAngle = remainder(currentAngle, 360.0)
+            if (desiredAngle >= 180) {
+                if (currentAngle < desiredAngle && currentAngle > desiredAngle - 180)
+                    currentAngle += rotateRate
+                else
+                    currentAngle -= rotateRate
+            } else {
+                if (currentAngle < desiredAngle || currentAngle > desiredAngle + 180.0)
+                    currentAngle += rotateRate
+                else
+                    currentAngle -= rotateRate
+            }
+        } else
             currentAngle = desiredAngle
     }
 }

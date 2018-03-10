@@ -70,7 +70,8 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     }
 
     fun update_hackEffect() {
-        val hacking = GameLevel.keybank.isKeyDown(key_hack) && Junker.targetedJunker != null
+        val hacking = Equipment.acquiredEquipment[Equipment.EquipmentType.HACK]!!
+                && GameLevel.keybank.isKeyDown(key_hack) && Junker.targetedJunker != null
                 && LevelManager.current.player.distanceTo(Junker.targetedJunker!!) < hackRange
         if (hacking && hackEffectState == HackEffect.ACTIVE
                 && (Junker.targetedJunker!! !is ShieldJunker // if we have a shield junker, check if it is shielded:

@@ -30,11 +30,13 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
 
     override fun addEvents(target: Scene) {
         target.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseBank.makeButtonListener(button_grenade, action = {
-            val dx = GameLevel.mousebank.mouseX - x
-            val dy = GameLevel.mousebank.mouseY - y
-            LevelManager.current.addLater(Grenade(gc, x, y,
-                    airtime = min(Grenade.airtime, sqrt(pow(dx, 2.0) + pow(dy, 2.0)) / Grenade.speed),
-                    direction = atan2(dy, dx)))
+            if (Equipment.acquiredEquipment[Equipment.EquipmentType.GRENADE]!!) {
+                val dx = GameLevel.mousebank.mouseX - x
+                val dy = GameLevel.mousebank.mouseY - y
+                LevelManager.current.addLater(Grenade(gc, x, y,
+                        airtime = min(Grenade.airtime, sqrt(pow(dx, 2.0) + pow(dy, 2.0)) / Grenade.speed),
+                        direction = atan2(dy, dx)))
+            }
         }))
     }
 
@@ -43,7 +45,7 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
         gc.fillRect(x, y, width, height)
     }
 
-    fun hit(amount: Int) {
+    fun hit(amount: Double) {
         if (LevelManager.current.player.immune == 0) {
             LevelManager.current.player.immune = immuneTime
 

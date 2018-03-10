@@ -1,10 +1,12 @@
 package games.rougelike.objects
 
+import com.sun.org.apache.xpath.internal.WhitespaceStrippingElementMatcher
 import games.rougelike.levels.GameLevel
 import games.support.LevelManager
 import games.support.interfaces.IGameObject
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
+import javafx.scene.text.Text
 import kotlin.math.roundToInt
 
 class HUD(gc: GraphicsContext) : IGameObject(gc) {
@@ -23,6 +25,7 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
     }
 
     override fun render() {
+        // back bar
         gc.fill = Color.BLACK
         gc.fillRect(0.0, 0.0, WIDTH, HEIGHT)
 
@@ -30,18 +33,32 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
         val barWidth = 20.0
         var current = sep
 
+        // corruption
         gc.fill = Color.RED
-        for (i in 0..Math.floor(corruption).roundToInt()) {
-            if(i == 0)
+        gc.stroke = Color.RED
+        for (i in 0 until MAX_CORRUPTION) {
+            if (i == 0)
                 continue
-            gc.fillRect(current, 2.0, barWidth, 36.0)
+            gc.strokeRect(current, 2.0, barWidth, 36.0)
+            if (i <= corruption)
+                if (i == corruption.toInt()) {
+                    val remainder = corruption % 1.0
+                    gc.fillRect(current, 2.0, barWidth * remainder, 36.0)
+                } else
+                    gc.fillRect(current, 2.0, barWidth, 36.0)
+
             current += sep + barWidth
         }
 
-        if(corruption > 0) {
-            val remainder = corruption % 1
-            gc.fillRect(current, 2.0, barWidth * remainder, 36.0)
-        }
+        gc.fill = Color.WHITE
+        val text = Equipment.EquipmentType.values()
+                .filter { t -> Equipment.acquiredEquipment[t]!! }.joinToString(",  ", prefix = "Equipment:  ") { t -> t.description }
+        val height = Text(text).layoutBounds.height
+        val width = Text(text).layoutBounds.width
+        gc.fillText(text, current, 2.0 + height)
+        current += sep + width
+
+
     }
 
     override fun update() {
