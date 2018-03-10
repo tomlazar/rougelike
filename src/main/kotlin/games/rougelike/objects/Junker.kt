@@ -53,7 +53,8 @@ open class Junker : IGameObject, IController {
         gc.fill = Color.GRAY
         gc.fillRect(x, y, width, height)
 
-        val targetSymbolRadius = radius * sqrt(2.0) + 4
+        gc.lineWidth = 1.5
+        val targetSymbolRadius = radius * sqrt(2.0) + gc.lineWidth + 3
         gc.stroke = Color.DARKRED
         if (isBeingTargeted) {
             gc.strokeOval(x + radius - targetSymbolRadius, y + radius - targetSymbolRadius, targetSymbolRadius * 2, targetSymbolRadius * 2)

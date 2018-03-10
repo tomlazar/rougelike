@@ -1,11 +1,7 @@
 package games.rougelike.levels
 
 import games.rougelike.FPS
-import games.rougelike.objects.Effects
-import games.rougelike.objects.HUD
-import games.rougelike.objects.Junker
-import games.rougelike.objects.Player
-import games.rougelike.objects.ShieldJunker
+import games.rougelike.objects.*
 import games.support.*
 import games.support.interfaces.IController
 import games.support.interfaces.IGameObject
@@ -18,6 +14,7 @@ import javafx.scene.Group
 import javafx.scene.Scene
 import javafx.scene.SubScene
 import javafx.scene.canvas.Canvas
+import javafx.scene.layout.Background
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import javafx.util.Duration
@@ -45,12 +42,20 @@ class GameLevel : ILevel() {
         stage!!.title = "ROUGELIKE THE MSCS ADVENTURE PARTY HAPPY FUNTIME GAME"
 
         // Create the main game window
-        val gameCanvas = Canvas(Grid.mapFromGrid(Grid.mapWidth.toDouble()), Grid.mapFromGrid(Grid.mapHeight.toDouble()))
+        val map = CsvReader.transpose(CsvReader.readCsv("Level3.csv"))
+                .map {row: Array<String> ->
+                    row.map { cell: String ->
+                        BackgroundObject(BackgroundObject.BackgroundType.fromId(cell.toInt()))
+                    }.toTypedArray()
+                }.toTypedArray()
+        val gameCanvas = Canvas(Grid.mapFromGrid(map.size.toDouble()), Grid.mapFromGrid(map[0].size.toDouble()))
         val gameScene = SubScene(Group(gameCanvas), WIDTH, HEIGHT)
         player = Player(gameCanvas.graphicsContext2D)
+        player.x = Grid.mapFromGrid(2.0)
+        player.y = Grid.mapFromGrid(6.0)
         camera = TrackingCamera(gameCanvas.graphicsContext2D, player)
         gameScene.camera = camera.sceneCamera
-        grid = Grid(gameCanvas.graphicsContext2D)
+        grid = Grid(gameCanvas.graphicsContext2D, map)
         effects = Effects(gameCanvas.graphicsContext2D)
 
         // Create the hud window
@@ -67,8 +72,8 @@ class GameLevel : ILevel() {
         // create evil bots
         for (i in 1..4) {
             var junker = Junker(gameCanvas.graphicsContext2D,
-                    (5 + (Random().nextInt(Grid.mapWidth - 5))).toDouble(),
-                    (5 + (Random().nextInt(Grid.mapHeight - 5))).toDouble(),
+                    (5 + (Random().nextInt(grid.mapWidth - 5))).toDouble(),
+                    (5 + (Random().nextInt(grid.mapHeight - 5))).toDouble(),
                     if (i <= 2) player else gameObjects.last(),
                     Grid.cellSize * (Random().nextDouble() + (if (i <= 2) 2.0 else 0.5)))
             gameObjects.add(junker)
