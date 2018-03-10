@@ -18,8 +18,8 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
 
     override fun addEvents(target: Scene) {
         target.addEventHandler(KeyEvent.KEY_PRESSED, KeyBank.makeKeyListener(key_spawnJunker, {
-            val junker = Junker(gc, Grid.mapToGrid(GameLevel.mousebank.mouseX),
-                    Grid.mapToGrid(GameLevel.mousebank.mouseY)//, target = GameLevel.player
+            val junker = ShieldJunker(gc, Grid.mapToGrid(GameLevel.mousebank.mouseX),
+                    Grid.mapToGrid(GameLevel.mousebank.mouseY) , target = GameLevel.player
             )
             LevelManager.current.addLater(junker)
             junker.addEvents(target)
@@ -58,18 +58,20 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
         }
     }
 
-
+    private val hackSourceX get () = GameLevel.player.x + GameLevel.player.width / 2
+    private val hackSourceY get () = GameLevel.player.y + GameLevel.player.height / 2
     fun render_hackEffect() {
         if (hackEffectState == HackEffect.ACTIVE) {
             setHackEffectVisuals(gc, 1.0 - hackEffectCounter / hackEffectState.duration)
-            gc.strokeLine(GameLevel.player.x + GameLevel.player.width / 2, GameLevel.player.y + GameLevel.player.height / 2,
-                    hackEffectX, hackEffectY)
+            gc.strokeLine(hackSourceX, hackSourceY, hackEffectX, hackEffectY)
         }
     }
 
     fun update_hackEffect() {
         val hacking = GameLevel.keybank.isKeyDown(key_hack) && Junker.targetedJunker != null
-        if (hacking && hackEffectState == HackEffect.ACTIVE)
+        if (hacking && hackEffectState == HackEffect.ACTIVE
+                && (Junker.targetedJunker!! !is ShieldJunker // if we have a shield junker, check if it is shielded:
+                || !(Junker.targetedJunker!! as ShieldJunker).protectsFrom(hackSourceX, hackSourceY)))
             Junker.targetedJunker!!.hackingProgress += 1
 
         hackEffectCounter += 1

@@ -7,8 +7,8 @@ import games.support.LevelManager
 import games.support.interfaces.IGameObject
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
-import kotlin.math.cos
-import kotlin.math.sin
+import java.lang.Math.pow
+import kotlin.math.*
 
 class Grenade(gc: GraphicsContext, x: Double, y: Double, airtime: Double = Grenade.airtime, direction: Double) : IGameObject(gc) {
     override var height = 12.0
@@ -39,15 +39,26 @@ class Grenade(gc: GraphicsContext, x: Double, y: Double, airtime: Double = Grena
             gc.fillOval(x, y, width, height)
         } else {
             Effects.setHackEffectVisuals(gc, 1.0 - counter / explodeTime)
-            gc.strokeOval(x + width - explosionRadius, y + height - explosionRadius, explosionRadius * 2, explosionRadius * 2)
+            gc.strokeOval(cx - explosionRadius, cy - explosionRadius, explosionRadius * 2, explosionRadius * 2)
         }
     }
 
+    private val nextx get() = x + speed * cos(direction)
+    private val nexty get() = y + speed * sin(direction)
     override fun update() {
         counter++
         if (!exploding) {
-            if (counter < airtime)
-                moveOnGrid(x + speed * cos(direction), y + speed * sin(direction), grid = GameLevel.grid.map)
+            if (counter < airtime) {
+
+                for (junker in LevelManager.current.currentGameObjects.map { o: IGameObject -> o as? ShieldJunker }.filter { j: ShieldJunker? -> j != null }) {
+                    if (junker!!.protectsFrom(x, y) && sqrt(pow(nextx - junker.cx, 2.0) + pow(nexty - junker.cy, 2.0)) <= junker.shieldRadius + height / 2) {
+                        val normalAngle = atan2(cy - junker.cy, cx - junker.cx)
+                        println("$direction -> $normalAngle -> ${normalAngle + (normalAngle - (direction - 180))}")
+                        direction = normalAngle + (normalAngle - (direction - PI))
+                    }
+                }
+                moveOnGrid(nextx, nexty, grid = GameLevel.grid.map)
+            }
             if (counter >= fuse) {
                 exploding = true
                 counter = 0
@@ -57,7 +68,8 @@ class Grenade(gc: GraphicsContext, x: Double, y: Double, airtime: Double = Grena
                 this.dead = true
             } else {
                 for (junker in LevelManager.current.currentGameObjects.map { o: IGameObject -> o as? Junker }.filter { j: Junker? -> j != null }) {
-                    if (junker!!.collidesWithCircle(x + width, y + height, explosionRadius))
+                    if (junker!!.collidesWithCircle(cx, cy, explosionRadius)
+                            && (junker !is ShieldJunker || !junker.protectsFrom(cx, cy)))
                         junker.kill()
                 }
             }
