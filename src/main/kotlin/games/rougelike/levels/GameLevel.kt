@@ -31,11 +31,11 @@ class GameLevel : ILevel() {
         val mousebank = MouseBank()
 
         const val NAME: String = ""
-        val LEVEL_REGEX = "Level([^\\.]+)\\.csv".toRegex()
+        val LEVEL_REGEX = ".*Level([^\\.]+)\\.csv".toRegex()
 
-        val levels = File(".").listFiles().filter { f: File -> f.isFile && LEVEL_REGEX.matches(f.name) }.map { f: File ->
+        val levels = File("Levels").listFiles().filter { f: File -> f.isFile && LEVEL_REGEX.matches(f.name) }.map { f: File ->
             val it = GameLevel()
-            it.build(f.name)
+            it.build(f.canonicalPath)
             it
         }
 
