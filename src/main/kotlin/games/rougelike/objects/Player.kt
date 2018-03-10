@@ -8,7 +8,13 @@ import games.support.*
 import games.support.interfaces.IController
 import javafx.scene.Scene
 import javafx.scene.canvas.GraphicsContext
+import javafx.scene.input.KeyEvent
+import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
+import java.lang.Math.pow
+import kotlin.math.atan2
+import kotlin.math.min
+import kotlin.math.sqrt
 
 class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     val radius = 15.0
@@ -22,7 +28,15 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     var immune = 0
     val immuneTime = (FPS / 2).toInt()
 
-    override fun addEvents(target: Scene) {}
+    override fun addEvents(target: Scene) {
+        target.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseBank.makeButtonListener(button_grenade, action = {
+            val dx = GameLevel.mousebank.mouseX - x
+            val dy = GameLevel.mousebank.mouseY - y
+            LevelManager.current.addLater(Grenade(gc, x, y,
+                    airtime = min(Grenade.airtime, sqrt(pow(dx, 2.0) + pow(dy, 2.0)) / Grenade.speed),
+                    direction = atan2(dy, dx)))
+        }))
+    }
 
     override fun render() {
         gc.fill = Color.PEACHPUFF
@@ -38,7 +52,7 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     }
 
     override fun update() {
-        if(immune >0 ){
+        if (immune > 0) {
             immune -= 1
         }
 

@@ -43,7 +43,6 @@ class Junker : IGameObject, IController {
         y = Grid.mapFromGrid(gridY)
         this.target = target
         this.speed = speed
-        println("Built junker")
     }
 
     override fun addEvents(target: Scene) {

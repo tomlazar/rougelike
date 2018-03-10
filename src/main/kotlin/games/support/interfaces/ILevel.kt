@@ -8,6 +8,7 @@ abstract class ILevel {
     abstract val HEIGHT: Double
 
     protected var gameObjects = mutableListOf<IGameObject>()
+    val currentGameObjects get() = gameObjects.toMutableList()
     protected var controllers = mutableListOf<IController>()
     protected var addLaterQueue = mutableListOf<IGameObject>()
 

@@ -9,6 +9,7 @@ import javafx.scene.input.MouseButton
 import javafx.scene.input.MouseEvent
 
 val button_setTarget = MouseButton.PRIMARY
+val button_grenade = MouseButton.SECONDARY
 
 class MouseBank() : IController {
     val buttonDown = hashMapOf(*MouseButton.values().map({ k -> Pair(k, false) }).toTypedArray())
@@ -40,9 +41,9 @@ class MouseBank() : IController {
             return sceneY + GameLevel.camera.sceneCamera.translateY - HUD.HEIGHT
         }
 
-        fun makeButtonListener(button: MouseButton, obj: IGameObject, action: () -> Unit): (MouseEvent?) -> Unit {
+        fun makeButtonListener(button: MouseButton, obj: IGameObject? = null, action: () -> Unit): (MouseEvent?) -> Unit {
             return { event: MouseEvent? ->
-                if (event!!.button == button && obj.getBoundingBox().contains(translateSceneX(event.sceneX), translateSceneY(event.sceneY)))
+                if (event!!.button == button && (obj == null || obj.getBoundingBox().contains(translateSceneX(event.sceneX), translateSceneY(event.sceneY))))
                     action.invoke()
             }
         }

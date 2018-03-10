@@ -4,9 +4,10 @@ import games.rougelike.objects.BackgroundObject
 import games.support.Grid
 import javafx.geometry.BoundingBox
 import javafx.scene.canvas.GraphicsContext
+import java.lang.Math.pow
 import kotlin.math.*
 
-abstract class IGameObject(val gc: GraphicsContext){
+abstract class IGameObject(val gc: GraphicsContext) {
 
     abstract var height: Double
     abstract var width: Double
@@ -25,6 +26,25 @@ abstract class IGameObject(val gc: GraphicsContext){
 
     fun collidesWith(other: IGameObject): Boolean {
         return getBoundingBox().intersects(other.getBoundingBox())
+    }
+
+    fun collidesWithCircle(centerX: Double, centerY: Double, radius: Double): Boolean {
+        val leftOffset = x - centerX
+        val rightOffset = x + width - centerX
+        val topOffset = y - centerY
+        val bottomOffset = y + height - centerY
+        return getBoundingBox().contains(centerX, centerY) // center of circle is inside object
+                || lineSegmentIntersectsCircle(leftOffset, topOffset, bottomOffset, radius) // left side of object is inside circle
+                || lineSegmentIntersectsCircle(rightOffset, topOffset, bottomOffset, radius) // right side
+                || lineSegmentIntersectsCircle(topOffset, leftOffset, rightOffset, radius) // top side
+                || lineSegmentIntersectsCircle(bottomOffset, leftOffset, rightOffset, radius) // bottom side
+    }
+
+    private fun lineSegmentIntersectsCircle(normalOffset: Double, tangentialOffsetLow: Double, tangentialOffsetHigh: Double, radius: Double): Boolean {
+        if (abs(normalOffset) > radius)
+            return false
+        val maxTangentialDistance = sqrt(pow(radius, 2.0) - pow(normalOffset, 2.0))
+        return tangentialOffsetLow <= maxTangentialDistance && -tangentialOffsetHigh <= maxTangentialDistance
     }
 
     abstract fun render()

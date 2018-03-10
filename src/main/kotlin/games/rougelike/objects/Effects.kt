@@ -19,7 +19,8 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     override fun addEvents(target: Scene) {
         target.addEventHandler(KeyEvent.KEY_PRESSED, KeyBank.makeKeyListener(key_spawnJunker, {
             val junker = Junker(gc, Grid.mapToGrid(GameLevel.mousebank.mouseX),
-                    Grid.mapToGrid(GameLevel.mousebank.mouseY), target = GameLevel.player)
+                    Grid.mapToGrid(GameLevel.mousebank.mouseY)//, target = GameLevel.player
+            )
             LevelManager.current.addLater(junker)
             junker.addEvents(target)
         }))
@@ -48,12 +49,19 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     var hackEffectX = 0.0
     var hackEffectY = 0.0
     var hackEffectCounter = 0
-    val hackEffectWeight = 5.0
+
+    companion object {
+        val hackEffectWeight = 5.0
+        fun setHackEffectVisuals(gc: GraphicsContext, weight: Double) {
+            gc.lineWidth = hackEffectWeight * weight
+            gc.stroke = Color.SKYBLUE
+        }
+    }
+
 
     fun render_hackEffect() {
         if (hackEffectState == HackEffect.ACTIVE) {
-            gc.lineWidth = hackEffectWeight * (1.0 - hackEffectCounter / hackEffectState.duration)
-            gc.stroke = Color.SKYBLUE
+            setHackEffectVisuals(gc, 1.0 - hackEffectCounter / hackEffectState.duration)
             gc.strokeLine(GameLevel.player.x + GameLevel.player.width / 2, GameLevel.player.y + GameLevel.player.height / 2,
                     hackEffectX, hackEffectY)
         }
