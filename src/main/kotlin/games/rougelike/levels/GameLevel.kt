@@ -5,6 +5,7 @@ import games.rougelike.objects.Effects
 import games.rougelike.objects.HUD
 import games.rougelike.objects.Junker
 import games.rougelike.objects.Player
+import games.rougelike.objects.ShieldJunker
 import games.support.*
 import games.support.interfaces.IController
 import games.support.interfaces.IGameObject

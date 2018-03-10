@@ -14,7 +14,7 @@ import java.util.*
 import kotlin.math.*
 
 @Suppress("ConvertSecondaryConstructorToPrimary")
-class Junker : IGameObject, IController {
+open class Junker : IGameObject, IController {
     // Junker is the superclass to all basic enemies
 
     private val radius = Grid.cellSize / 2
