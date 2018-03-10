@@ -14,6 +14,9 @@ abstract class IGameObject(val gc: GraphicsContext){
     abstract var x: Double
     abstract var y: Double
 
+    val cx get() = x + width/2
+    val cy get() = y + height/2
+
     val gridx get() = Grid.mapToGrid(x)
     val gridy get() = Grid.mapToGrid(y)
 
