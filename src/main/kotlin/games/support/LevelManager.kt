@@ -13,8 +13,11 @@ class LevelManager {
         var current: ILevel
             get() = level!!
             set(value) {
+                if (level != null) {
+                    level!!.stop()
+                }
                 level = value
-                level!!.buildScene(stage)
+                value.start(stage)
             }
     }
 }

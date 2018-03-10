@@ -1,22 +1,37 @@
 package games.support.interfaces
 
+import games.rougelike.objects.Effects
+import games.rougelike.objects.HUD
+import games.rougelike.objects.Player
+import games.support.Grid
+import games.support.KeyBank
+import games.support.MouseBank
+import games.support.TrackingCamera
+import javafx.animation.Timeline
+import javafx.scene.Scene
 import javafx.stage.Stage
 
 abstract class ILevel {
-
-    abstract val WIDTH: Double
-    abstract val HEIGHT: Double
 
     protected var gameObjects = mutableListOf<IGameObject>()
     val currentGameObjects get() = gameObjects.toMutableList()
     protected var controllers = mutableListOf<IController>()
     protected var addLaterQueue = mutableListOf<IGameObject>()
 
+    lateinit var player: Player
+    lateinit var hud: HUD
+    lateinit var effects: Effects
+    lateinit var grid: Grid
+    lateinit var camera: TrackingCamera
+    lateinit var scene: Scene
+    lateinit var loop: Timeline
+
     fun addLater(o: IGameObject) {
         addLaterQueue.add(o)
     }
 
-    abstract fun buildScene(stage: Stage?)
+    abstract fun start(stage: Stage?)
+    abstract fun stop()
 
     open fun render() {
         gameObjects.forEach({ c: IGameObject ->

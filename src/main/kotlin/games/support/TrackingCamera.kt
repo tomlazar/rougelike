@@ -2,7 +2,7 @@ package games.support
 
 import javafx.scene.*
 import games.rougelike.*
-import games.rougelike.levels.GameLevel.Companion.keybank
+import games.rougelike.levels.GameLevel
 import games.support.interfaces.IGameObject
 import javafx.geometry.Point3D
 import javafx.scene.canvas.GraphicsContext
@@ -25,9 +25,9 @@ class TrackingCamera(gc: GraphicsContext, private var trackingObject: IGameObjec
 
     override fun update() {
         if (trackingObject != null) {
-            sceneCamera.translateX = trackingObject!!.x - (LevelManager.current.WIDTH / 2)
-            sceneCamera.translateY = trackingObject!!.y - (LevelManager.current.HEIGHT / 2)
-            sceneCamera.translateZ += zoomSpeed / FPS * keybank.keyNegPos(key_zoom_out, key_zoom_in)
+            sceneCamera.translateX = trackingObject!!.x - (GameLevel.WIDTH / 2)
+            sceneCamera.translateY = trackingObject!!.y - (GameLevel.HEIGHT / 2)
+            sceneCamera.translateZ += zoomSpeed / FPS * GameLevel.keybank.keyNegPos(key_zoom_out, key_zoom_in)
         }
     }
 

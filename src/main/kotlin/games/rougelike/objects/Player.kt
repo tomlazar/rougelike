@@ -44,8 +44,8 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     }
 
     fun hit(amount: Int) {
-        if (GameLevel.player.immune == 0) {
-            GameLevel.player.immune = immuneTime
+        if (LevelManager.current.player.immune == 0) {
+            LevelManager.current.player.immune = immuneTime
 
             HUD.corruption += amount
         }
@@ -59,6 +59,14 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
         val dx = speed / FPS * GameLevel.keybank.keyNegPos(key_left, key_right)
         val dy = speed / FPS * GameLevel.keybank.keyNegPos(key_up, key_down)
 
-        moveOnGrid(x + dx, y + dy, GameLevel.grid.map)
+        moveOnGrid(x + dx, y + dy, LevelManager.current.grid.map)
+
+        val teleportSpace = intersectingGridSquares(LevelManager.current.grid.map).find { o: BackgroundObject -> o.teleporter != null }
+        if (teleportSpace != null) {
+            val level = GameLevel.getLevel(teleportSpace.teleporter!!.level)
+            level!!.player.gridx = teleportSpace.teleporter!!.gridx
+            level!!.player.gridy = teleportSpace.teleporter!!.gridy
+            LevelManager.current = level
+        }
     }
 }

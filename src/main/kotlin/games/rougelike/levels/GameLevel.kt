@@ -18,32 +18,37 @@ import javafx.scene.layout.Background
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import javafx.util.Duration
+import java.io.File
 import java.util.*
 
 class GameLevel : ILevel() {
 
-    override val HEIGHT = 800.0
-    override val WIDTH = 600.0
-
     companion object {
-        const val NAME: String = ""
-
-        lateinit var player: Player
-        lateinit var hud: HUD
-        lateinit var effects: Effects
-        lateinit var grid: Grid
-        lateinit var camera: TrackingCamera
+        val HEIGHT = 800.0
+        val WIDTH = 600.0
 
         val keybank = KeyBank()
         val mousebank = MouseBank()
+
+        const val NAME: String = ""
+        val LEVEL_REGEX = "Level([0-9]+)\\.csv".toRegex()
+
+        val levels = File(".").listFiles().filter { f: File -> f.isFile && LEVEL_REGEX.matches(f.name) }.map { f: File ->
+            val it = GameLevel()
+            it.build(f.name)
+            it
+        }
+
+        fun getLevel(id: Int) = levels.find { l: GameLevel -> l.levelId == id }
     }
 
-    override fun buildScene(stage: Stage?) {
-        stage!!.title = "ROUGELIKE THE MSCS ADVENTURE PARTY HAPPY FUNTIME GAME"
+    var levelId: Int = -1
 
+    fun build(gridfile: String) {
         // Create the main game window
-        val map = Util.transpose(CsvReader.readCsv("Level3.csv"))
-                .map {row: Array<String> ->
+        levelId = LEVEL_REGEX.matchEntire(gridfile)!!.groupValues[1].toInt()
+        val map = Util.transpose(CsvReader.readCsv(gridfile))
+                .map { row: Array<String> ->
                     row.map { cell: String ->
                         BackgroundObject.fromCode(cell)
                     }.toTypedArray()
@@ -66,8 +71,8 @@ class GameLevel : ILevel() {
         // finialize layout
         val layout = VBox(gameHud, gameScene)
 
-        val scene = Scene(layout)
-        stage.scene = scene
+        scene = Scene(layout)
+        //stage.scene = scene
 
         // create evil bots
         for (i in 1..4) {
@@ -90,13 +95,20 @@ class GameLevel : ILevel() {
         // set up update
         val kf = KeyFrame(Duration(1000 / FPS), EventHandler { update(); render() })
 
-        val loop = Timeline(kf)
+        loop = Timeline(kf)
         loop.cycleCount = Animation.INDEFINITE
-        loop.play()
+    }
 
+    override fun start(stage: Stage?) {
+        loop.play()
+        stage!!.scene = this.scene
         stage.width = WIDTH
         stage.height = HEIGHT + HUD.HEIGHT
         stage.show()
+    }
+
+    override fun stop() {
+        loop.pause()
     }
 
     override fun render() {

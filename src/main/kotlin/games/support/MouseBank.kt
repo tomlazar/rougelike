@@ -34,11 +34,11 @@ class MouseBank() : IController {
 
     companion object {
         fun translateSceneX(sceneX: Double): Double {
-            return sceneX + GameLevel.camera.sceneCamera.translateX
+            return sceneX + LevelManager.current.camera.sceneCamera.translateX
         }
 
         fun translateSceneY(sceneY: Double): Double {
-            return sceneY + GameLevel.camera.sceneCamera.translateY - HUD.HEIGHT
+            return sceneY + LevelManager.current.camera.sceneCamera.translateY - HUD.HEIGHT
         }
 
         fun makeButtonListener(button: MouseButton, obj: IGameObject? = null, action: () -> Unit): (MouseEvent?) -> Unit {

@@ -57,7 +57,7 @@ class Grenade(gc: GraphicsContext, x: Double, y: Double, airtime: Double = Grena
                         direction = normalAngle + (normalAngle - (direction - PI))
                     }
                 }
-                moveOnGrid(nextx, nexty, grid = GameLevel.grid.map)
+                moveOnGrid(nextx, nexty, grid = LevelManager.current.grid.map)
             }
             if (counter >= fuse) {
                 exploding = true

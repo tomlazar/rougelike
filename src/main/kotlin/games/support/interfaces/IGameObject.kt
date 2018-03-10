@@ -16,11 +16,27 @@ abstract class IGameObject(val gc: GraphicsContext) {
     abstract var x: Double
     abstract var y: Double
 
-    val cx get() = x + width / 2
-    val cy get() = y + height / 2
+    var cx
+        get() = x + width / 2
+        set(value) {
+            x = value - width / 2
+        }
+    var cy
+        get() = y + height / 2
+        set(value) {
+            y = value - height / 2
+        }
 
-    val gridx get() = Grid.mapToGrid(x)
-    val gridy get() = Grid.mapToGrid(y)
+    var gridx
+        get() = Grid.mapToGrid(x)
+        set(value) {
+            x = Grid.mapFromGrid(value)
+        }
+    var gridy
+        get() = Grid.mapToGrid(y)
+        set(value) {
+            y = Grid.mapFromGrid(value)
+        }
 
     var dead: Boolean = false
 

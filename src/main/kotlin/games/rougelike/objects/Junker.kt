@@ -70,8 +70,8 @@ open class Junker : IGameObject, IController {
         if (hackingProgress >= hackTime)
             this.kill()
 
-        if (this.collidesWith(GameLevel.player)) {
-            GameLevel.player.hit(1)
+        if (this.collidesWith(LevelManager.current.player)) {
+            LevelManager.current.player.hit(1)
         }
     }
 
@@ -116,7 +116,7 @@ open class Junker : IGameObject, IController {
                 else
                     newY = y + dy
 
-                moveOnGrid(newX, newY, GameLevel.grid.map)
+                moveOnGrid(newX, newY, LevelManager.current.grid.map)
             }
         }
     }

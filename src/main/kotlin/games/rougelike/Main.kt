@@ -10,7 +10,8 @@ const val FPS = 25.0
 class Main : Application() {
     override fun start(stage: Stage?) {
         LevelManager.stage = stage
-        LevelManager.current = GameLevel()
+        stage!!.title = "ROUGELIKE THE MSCS ADVENTURE PARTY HAPPY FUNTIME GAME"
+        LevelManager.current = GameLevel.getLevel(3)!!
     }
 }
 

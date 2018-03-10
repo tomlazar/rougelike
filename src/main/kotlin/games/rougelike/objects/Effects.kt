@@ -19,7 +19,7 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     override fun addEvents(target: Scene) {
         target.addEventHandler(KeyEvent.KEY_PRESSED, KeyBank.makeKeyListener(key_spawnJunker, {
             val junker = ShieldJunker(gc, Grid.mapToGrid(GameLevel.mousebank.mouseX),
-                    Grid.mapToGrid(GameLevel.mousebank.mouseY) , target = GameLevel.player
+                    Grid.mapToGrid(GameLevel.mousebank.mouseY) , target = LevelManager.current.player
             )
             LevelManager.current.addLater(junker)
             junker.addEvents(target)
@@ -58,8 +58,8 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
         }
     }
 
-    private val hackSourceX get () = GameLevel.player.x + GameLevel.player.width / 2
-    private val hackSourceY get () = GameLevel.player.y + GameLevel.player.height / 2
+    private val hackSourceX get () = LevelManager.current.player.x + LevelManager.current.player.width / 2
+    private val hackSourceY get () = LevelManager.current.player.y + LevelManager.current.player.height / 2
     fun render_hackEffect() {
         if (hackEffectState == HackEffect.ACTIVE) {
             setHackEffectVisuals(gc, 1.0 - hackEffectCounter / hackEffectState.duration)

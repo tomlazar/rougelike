@@ -14,7 +14,7 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
     override var height = 0.0
 
     companion object {
-        val WIDTH = LevelManager.current.WIDTH
+        val WIDTH = GameLevel.WIDTH
         val HEIGHT = 40.0
 
         const val MAX_CORRUPTION = 5
@@ -46,7 +46,7 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
 
     override fun update() {
         if (corruption >= MAX_CORRUPTION) {
-            GameLevel.player.dead = true
+            LevelManager.current.player.dead = true
         }
     }
 }
