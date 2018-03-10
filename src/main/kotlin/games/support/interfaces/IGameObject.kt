@@ -2,6 +2,7 @@ package games.support.interfaces
 
 import games.rougelike.objects.BackgroundObject
 import games.support.Grid
+import games.support.Util
 import javafx.geometry.BoundingBox
 import javafx.scene.canvas.GraphicsContext
 import java.lang.Math.pow
@@ -54,18 +55,9 @@ abstract class IGameObject(val gc: GraphicsContext) {
     abstract fun update()
 
     fun moveOnGrid(newx: Double, newy: Double, grid: Array<Array<BackgroundObject>>, slide: Boolean = true): Boolean {
-        var gleft = max(0, Grid.mapToGrid(newx).toInt())
-        var gright = min(grid.size, Grid.mapToGrid(newx + width).toInt())
-        var gtop = max(0, Grid.mapToGrid(newy).toInt())
-        var gbottom = min(grid[0].size, Grid.mapToGrid(newy + height).toInt())
-        if (Grid.mapToGrid(newx + width) % 1.0 == 0.0)
-            gright -= 1
-        if (Grid.mapToGrid(newy + height) % 1.0 == 0.0)
-            gbottom -= 1
-
         val newPositionTraversable =
-                (gleft..gright).asSequence().all { gx ->
-                    (gtop..gbottom).asSequence().all { gy ->
+                Util.integersInRange(max(0.0, Grid.mapToGrid(newx)), min(grid.size.toDouble(), Grid.mapToGrid(newx + width))).asSequence().all { gx ->
+                    Util.integersInRange(max(0.0, Grid.mapToGrid(newy)), min(grid.size.toDouble(), Grid.mapToGrid(newy + height))).asSequence().all { gy ->
                         grid[gx][gy].type.traversable
                     }
                 }

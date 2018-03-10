@@ -42,7 +42,7 @@ class GameLevel : ILevel() {
         stage!!.title = "ROUGELIKE THE MSCS ADVENTURE PARTY HAPPY FUNTIME GAME"
 
         // Create the main game window
-        val map = CsvReader.transpose(CsvReader.readCsv("Level3.csv"))
+        val map = Util.transpose(CsvReader.readCsv("Level3.csv"))
                 .map {row: Array<String> ->
                     row.map { cell: String ->
                         BackgroundObject(BackgroundObject.BackgroundType.fromId(cell.toInt()))

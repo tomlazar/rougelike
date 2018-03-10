@@ -44,6 +44,9 @@ gradle-app.setting
 
 # End of https://www.gitignore.io/api/gradle,kotlin
 
+# Microsoft Office
+~*.xlsx
+
 
 # Created by https://www.gitignore.io/api/intellij
 
