@@ -19,7 +19,7 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     override fun addEvents(target: Scene) {
         target.addEventHandler(KeyEvent.KEY_PRESSED, KeyBank.makeKeyListener(key_spawnJunker, {
             val junker = ShieldJunker(gc, Grid.mapToGrid(GameLevel.mousebank.mouseX),
-                    Grid.mapToGrid(GameLevel.mousebank.mouseY) , target = LevelManager.current.player
+                    Grid.mapToGrid(GameLevel.mousebank.mouseY), target = LevelManager.current.player
             )
             LevelManager.current.addLater(junker)
             junker.addEvents(target)
@@ -56,6 +56,8 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
             gc.lineWidth = hackEffectWeight * weight
             gc.stroke = Color.SKYBLUE
         }
+
+        val hackRange get() = Junker.targetedJunker!!.targetingDistance
     }
 
     private val hackSourceX get () = LevelManager.current.player.x + LevelManager.current.player.width / 2
@@ -69,6 +71,7 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
 
     fun update_hackEffect() {
         val hacking = GameLevel.keybank.isKeyDown(key_hack) && Junker.targetedJunker != null
+                && LevelManager.current.player.distanceTo(Junker.targetedJunker!!) < hackRange
         if (hacking && hackEffectState == HackEffect.ACTIVE
                 && (Junker.targetedJunker!! !is ShieldJunker // if we have a shield junker, check if it is shielded:
                 || !(Junker.targetedJunker!! as ShieldJunker).protectsFrom(hackSourceX, hackSourceY)))

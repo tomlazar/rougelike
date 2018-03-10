@@ -63,10 +63,15 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
 
         val teleportSpace = intersectingGridSquares(LevelManager.current.grid.map).find { o: BackgroundObject -> o.teleporter != null }
         if (teleportSpace != null) {
-            val level = GameLevel.getLevel(teleportSpace.teleporter!!.level)
-            level!!.player.gridx = teleportSpace.teleporter!!.gridx
-            level!!.player.gridy = teleportSpace.teleporter!!.gridy
-            LevelManager.current = level
+            teleport(teleportSpace.teleporter!!)
         }
+    }
+
+    private fun teleport(target: BackgroundObject.TeleportLocation) {
+        val level = GameLevel.getLevel(target.level)
+        level!!.player.gridx = target.gridx
+        level!!.player.gridy = target.gridy
+        Junker.targetedJunker = null
+        LevelManager.current = level
     }
 }

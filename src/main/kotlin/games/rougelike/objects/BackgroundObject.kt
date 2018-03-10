@@ -9,6 +9,10 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
     var teleporter: TeleportLocation? = null
     class TeleportLocation(val level: Int, val gridx: Double, val gridy: Double)
 
+    var isPlayerSpawn = false
+    var isJunkerSpawn = false
+    var isShieldJunkerSpawn = false
+
     enum class BackgroundType(var id: Int, var traversable: Boolean, var fill: Color) {
         DEFAULT(-1, true, Color.PINK),
         GAP(0, false, Color.WHITE),
@@ -36,6 +40,14 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                 when (split[0].toInt()) {
                     0 -> { // teleporter tile
                         it.teleporter = TeleportLocation(split[1].toInt(), split[2].toDouble(), split[3].toDouble())
+                    }
+                    1 -> {
+                        it.isJunkerSpawn = true
+                        if (split[1].toInt() == 1)
+                            it.isShieldJunkerSpawn = true
+                    }
+                    2 -> {
+                        it.isPlayerSpawn = true
                     }
                 }
             }

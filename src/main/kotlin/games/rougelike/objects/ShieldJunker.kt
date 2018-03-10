@@ -53,6 +53,7 @@ class ShieldJunker(gc: GraphicsContext, gridX: Double, gridY: Double, var target
     override fun update() {
         super.update()
 
-        currentAngle = desiredAngle
+        if (tracking)
+            currentAngle = desiredAngle
     }
 }

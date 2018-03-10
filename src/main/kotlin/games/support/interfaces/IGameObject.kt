@@ -5,6 +5,7 @@ import games.support.Grid
 import games.support.Util
 import javafx.geometry.BoundingBox
 import javafx.scene.canvas.GraphicsContext
+import java.awt.font.ImageGraphicAttribute
 import java.lang.Math.pow
 import kotlin.math.*
 
@@ -65,6 +66,10 @@ abstract class IGameObject(val gc: GraphicsContext) {
             return false
         val maxTangentialDistance = sqrt(pow(radius, 2.0) - pow(normalOffset, 2.0))
         return tangentialOffsetLow <= maxTangentialDistance && -tangentialOffsetHigh <= maxTangentialDistance
+    }
+
+    fun distanceTo(other: IGameObject): Double {
+        return sqrt(pow(x - other.x, 2.0) + pow(y - other.y, 2.0))
     }
 
     abstract fun render()

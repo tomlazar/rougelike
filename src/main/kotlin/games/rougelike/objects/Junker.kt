@@ -10,6 +10,7 @@ import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import javafx.scene.shape.ArcType
+import java.lang.Math.pow
 import java.util.*
 import kotlin.math.*
 
@@ -34,6 +35,7 @@ open class Junker : IGameObject, IController {
             targetedJunker = j
         }
     }
+
     private val isBeingTargeted get() = this == targetedJunker
     var hackingProgress = 0.0
     val hackTime = 1.5 * FPS * (Effects.HackEffect.ACTIVE.duration / (Effects.HackEffect.ACTIVE.duration + Effects.HackEffect.WAITING.duration))
@@ -65,6 +67,13 @@ open class Junker : IGameObject, IController {
     }
 
     override fun update() {
+        if (target != null) {
+            if (!tracking && distanceTo(target!!) < targetingDistance)
+                tracking = true
+            if (tracking && distanceTo(target!!) > trackingDistance)
+                tracking = false
+        }
+
         update_Move()
 
         if (hackingProgress >= hackTime)
@@ -75,10 +84,14 @@ open class Junker : IGameObject, IController {
         }
     }
 
+    val targetingDistance = Grid.cellSize * 4.0
+    val trackingDistance = Grid.cellSize * 8.0
+    var tracking = false
+
     private fun update_Move() {
         // track the target, moving along the grid
 
-        if (target != null) {
+        if (target != null && tracking) {
             if (target!!.dead)
                 target = null
             else {

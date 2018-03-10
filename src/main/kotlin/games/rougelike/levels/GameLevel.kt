@@ -56,8 +56,6 @@ class GameLevel : ILevel() {
         val gameCanvas = Canvas(Grid.mapFromGrid(map.size.toDouble()), Grid.mapFromGrid(map[0].size.toDouble()))
         val gameScene = SubScene(Group(gameCanvas), WIDTH, HEIGHT)
         player = Player(gameCanvas.graphicsContext2D)
-        player.x = Grid.mapFromGrid(2.0)
-        player.y = Grid.mapFromGrid(6.0)
         camera = TrackingCamera(gameCanvas.graphicsContext2D, player)
         gameScene.camera = camera.sceneCamera
         grid = Grid(gameCanvas.graphicsContext2D, map)
@@ -74,15 +72,29 @@ class GameLevel : ILevel() {
         scene = Scene(layout)
         //stage.scene = scene
 
-        // create evil bots
-        for (i in 1..4) {
-            var junker = Junker(gameCanvas.graphicsContext2D,
-                    (5 + (Random().nextInt(grid.mapWidth - 5))).toDouble(),
-                    (5 + (Random().nextInt(grid.mapHeight - 5))).toDouble(),
-                    if (i <= 2) player else gameObjects.last(),
-                    Grid.cellSize * (Random().nextDouble() + (if (i <= 2) 2.0 else 0.5)))
-            gameObjects.add(junker)
-            junker.addEvents(gameScene.scene)
+        // apply grid properties
+        for (gridx in 0 until grid.map.size) {
+            for (gridy in 0 until grid.map[gridx].size) {
+                val gridcell = grid.map[gridx][gridy]
+                if (gridcell.isPlayerSpawn) {
+                    player.gridx = gridx.toDouble()
+                    player.gridy = gridy.toDouble()
+                }
+                if (gridcell.isJunkerSpawn) {
+                    val speed = Grid.cellSize * (Random().nextDouble() + 3.0)
+                    val junker =
+                            if (gridcell.isShieldJunkerSpawn)
+                                ShieldJunker(gameCanvas.graphicsContext2D,
+                                        gridx.toDouble(), gridy.toDouble(),
+                                        player, speed)
+                            else Junker(gameCanvas.graphicsContext2D,
+                                    gridx.toDouble(), gridy.toDouble(),
+                                    player, speed)
+
+                    gameObjects.add(junker)
+                    junker.addEvents(gameScene.scene)
+                }
+            }
         }
 
         // add objects to list
