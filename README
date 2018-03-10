@@ -1,0 +1,32 @@
+Charlie Morley & Tom Lazar
+
+The current version of our "MSCS rougelike" has two levels and a room, two bad guys,
+and two attacks that the player can use. We currently don't have any artwork,
+but we have placeholders for most of the different environment pieces we want to have.
+
+
+The game starts on the third floor of Cudahy. Look for the gold dot equipment pick-ups
+to get your weapons. Both weapons require you to get some-what close to hack the bad
+guys, and one of the bad guys has some defense against your attacks. 
+If the evil robots touch you for too long you'll lose.
+
+
+One of the equipment upgrades is in the systems lab. Tiles which bring you to new
+rooms and levels are currently colored Aqua Blue.
+
+
+As we go forward we plan to add lots more levels and rooms (which should be easy with 
+our csv file level system), and probably at least one more bad guy type and weapon type.
+We eventually want to add some story prompts as well.
+
+
+
+Controls:
+WASD for movement
+The rest are explained on screen, but:
+ - Point and click to select a target, hold space to hack
+ - Right click to throw a hack grenade
+ 
+Some debugging controls we left in if you want to play around with them:
+ - J to spawn a junker at the mouse location.
+ - Q and E to zoom in and out!

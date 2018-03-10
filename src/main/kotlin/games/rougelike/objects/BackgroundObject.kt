@@ -23,9 +23,9 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         GAP(0, false, Color.WHITE),
         FLOOR(1, true, Color.GREEN),
         WALL(2, false, Color.BLACK),
-        STAIR_UP(4, true, Color.AQUA),
-        STAIR_DOWN(5, true, Color.AZURE),
-        DOOR(6, true, Color.AQUA),
+        STAIR_DOWN(4, true, Color.AZURE),
+        STAIR_UP(5, true, Color.AZURE),
+        DOOR(6, true, Color.AZURE),
         BANISTER_XY(10, false, Color.DARKSLATEGRAY),
         BANISTER_X(11, false, Color.DARKSLATEGRAY),
         BANISTER_Y(12, false, Color.DARKSLATEGRAY)
@@ -75,6 +75,9 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
             }
             else -> gc.stroke = Color.BLACK
         }
+
+        if (this.teleporter != null)
+            gc.fill = Color.AQUA
 
         gc.fillRect(x, y, Grid.cellSize, Grid.cellSize)
         gc.strokeRect(x, y, Grid.cellSize, Grid.cellSize)
