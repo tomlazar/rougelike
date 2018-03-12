@@ -48,10 +48,11 @@ open class Junker : IGameObject, IController {
     }
 
     override fun addEvents(target: Scene) {
-        target.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseBank.makeButtonListener(button_setTarget, this, {
-            if (Equipment.acquiredEquipment[Equipment.EquipmentType.HACK]!!)
+        InputManager.addListener(target, InputBinding.SET_TARGET, InputEventType.CLICKED, {
+            if (getBoundingBox().contains(LevelManager.inputManager.mouseX, LevelManager.inputManager.mouseY)
+                    && Equipment.acquiredEquipment[Equipment.EquipmentType.HACK]!!)
                 switchTargetedJunker(this)
-        }))
+        })
     }
 
     override fun render() {

@@ -27,8 +27,7 @@ class TrackingCamera(gc: GraphicsContext, private var trackingObject: IGameObjec
         if (trackingObject != null) {
             sceneCamera.translateX = trackingObject!!.x - (GameLevel.WIDTH / 2)
             sceneCamera.translateY = trackingObject!!.y - (GameLevel.HEIGHT / 2)
-            sceneCamera.translateZ += zoomSpeed / FPS * GameLevel.keybank.keyNegPos(key_zoom_out, key_zoom_in)
+            sceneCamera.translateZ += zoomSpeed / FPS * LevelManager.inputManager.inputNegPos(InputBinding.ZOOM_IN, InputBinding.ZOOM_OUT)
         }
     }
-
 }

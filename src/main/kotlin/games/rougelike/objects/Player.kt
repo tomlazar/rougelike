@@ -29,15 +29,15 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     val immuneTime = (FPS / 2).toInt()
 
     override fun addEvents(target: Scene) {
-        target.addEventHandler(MouseEvent.MOUSE_CLICKED, MouseBank.makeButtonListener(button_grenade, action = {
+        InputManager.addListener(target, InputBinding.GRENADE, InputEventType.CLICKED, {
             if (Equipment.acquiredEquipment[Equipment.EquipmentType.GRENADE]!!) {
-                val dx = GameLevel.mousebank.mouseX - x
-                val dy = GameLevel.mousebank.mouseY - y
+                val dx = LevelManager.inputManager.mouseX - x
+                val dy = LevelManager.inputManager.mouseY - y
                 LevelManager.current.addLater(Grenade(gc, x, y,
                         airtime = min(Grenade.airtime, sqrt(pow(dx, 2.0) + pow(dy, 2.0)) / Grenade.speed),
                         direction = atan2(dy, dx)))
             }
-        }))
+        })
     }
 
     override fun render() {
@@ -58,8 +58,8 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
             immune -= 1
         }
 
-        val dx = speed / FPS * GameLevel.keybank.keyNegPos(key_left, key_right)
-        val dy = speed / FPS * GameLevel.keybank.keyNegPos(key_up, key_down)
+        val dx = speed / FPS * LevelManager.inputManager.inputNegPos(InputBinding.LEFT, InputBinding.RIGHT)
+        val dy = speed / FPS * LevelManager.inputManager.inputNegPos(InputBinding.UP, InputBinding.DOWN)
 
         moveOnGrid(x + dx, y + dy, LevelManager.current.grid.map)
 
@@ -72,7 +72,7 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     private fun teleport(target: BackgroundObject.TeleportLocation) {
         val level = GameLevel.getLevel(target.level)
         level!!.player.gridx = target.gridx
-        level!!.player.gridy = target.gridy
+        level.player.gridy = target.gridy
         Junker.targetedJunker = null
         LevelManager.current = level
     }

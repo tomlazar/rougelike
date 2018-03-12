@@ -27,9 +27,6 @@ class GameLevel : ILevel() {
         val HEIGHT = 800.0
         val WIDTH = 600.0
 
-        val keybank = KeyBank()
-        val mousebank = MouseBank()
-
         const val NAME: String = ""
         val LEVEL_REGEX = ".*Level([^\\.]+)\\.csv".toRegex()
 
@@ -47,7 +44,7 @@ class GameLevel : ILevel() {
     fun build(gridfile: String) {
         // Create the main game window
         levelId = LEVEL_REGEX.matchEntire(gridfile)!!.groupValues[1]
-        val map = Util.transpose(CsvReader.readCsv(gridfile))
+        val map = Util.transpose(Util.readCsv(gridfile))
                 .map { row: Array<String> ->
                     row.map { cell: String ->
                         BackgroundObject.fromCode(cell)
@@ -104,7 +101,7 @@ class GameLevel : ILevel() {
         listOf(hud, effects, player, camera).forEach { o: IGameObject -> gameObjects.add(o) }
 
         // add events
-        listOf(keybank, mousebank, effects).forEach { c: IController -> c.addEvents(scene) }
+        listOf(LevelManager.inputManager, effects).forEach { c: IController -> c.addEvents(gameScene.scene) }
         player.addEvents(gameScene.scene)
 
         // set up update

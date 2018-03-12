@@ -59,8 +59,8 @@ class ShieldJunker(gc: GraphicsContext, gridX: Double, gridY: Double, var target
     override fun update() {
         super.update()
 
-        if (tracking) {
-            currentAngle = remainder(currentAngle, 360.0)
+        currentAngle = remainder(currentAngle, 360.0)
+        if (tracking && abs(remainder(currentAngle - desiredAngle, 360.0)) > rotateRate) {
             if (desiredAngle >= 180) {
                 if (currentAngle < desiredAngle && currentAngle > desiredAngle - 180)
                     currentAngle += rotateRate

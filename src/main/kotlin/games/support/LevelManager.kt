@@ -6,6 +6,8 @@ import javafx.stage.Stage
 class LevelManager {
 
     companion object {
+        val inputManager = InputManager()
+
         var stage: Stage? = null
 
         private var level: ILevel? = null

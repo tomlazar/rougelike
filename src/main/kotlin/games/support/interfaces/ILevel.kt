@@ -4,8 +4,6 @@ import games.rougelike.objects.Effects
 import games.rougelike.objects.HUD
 import games.rougelike.objects.Player
 import games.support.Grid
-import games.support.KeyBank
-import games.support.MouseBank
 import games.support.TrackingCamera
 import javafx.animation.Timeline
 import javafx.scene.Scene

@@ -17,13 +17,12 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     override var y = 0.0
 
     override fun addEvents(target: Scene) {
-        target.addEventHandler(KeyEvent.KEY_PRESSED, KeyBank.makeKeyListener(key_spawnJunker, {
-            val junker = ShieldJunker(gc, Grid.mapToGrid(GameLevel.mousebank.mouseX),
-                    Grid.mapToGrid(GameLevel.mousebank.mouseY), target = LevelManager.current.player
-            )
+        InputManager.addListener(target, InputBinding.SPAWN_JUNKER, InputEventType.CLICKED, {
+            val junker = ShieldJunker(gc, Grid.mapToGrid(LevelManager.inputManager.mouseX),
+                    Grid.mapToGrid(LevelManager.inputManager.mouseY), target = LevelManager.current.player)
             LevelManager.current.addLater(junker)
             junker.addEvents(target)
-        }))
+        })
     }
 
     override fun render() {
@@ -71,7 +70,7 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
 
     fun update_hackEffect() {
         val hacking = Equipment.acquiredEquipment[Equipment.EquipmentType.HACK]!!
-                && GameLevel.keybank.isKeyDown(key_hack) && Junker.targetedJunker != null
+                && LevelManager.inputManager.isInputActive(InputBinding.HACK) && Junker.targetedJunker != null
                 && LevelManager.current.player.distanceTo(Junker.targetedJunker!!) < hackRange
         if (hacking && hackEffectState == HackEffect.ACTIVE
                 && (Junker.targetedJunker!! !is ShieldJunker // if we have a shield junker, check if it is shielded:
