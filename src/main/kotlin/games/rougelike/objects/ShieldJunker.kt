@@ -29,6 +29,9 @@ class ShieldJunker(gc: GraphicsContext, gridX: Double, gridY: Double, var target
         }
 
     fun protectsFrom(attackX: Double, attackY: Double): Boolean {
+        if (!tracking) // shield up only when tracking
+            return false
+
         val dx = attackX - cx
         val dy = attackY - cy
         val attackAngle = remainder(Math.toDegrees(Math.atan2(dy, dx)), 360.0)
