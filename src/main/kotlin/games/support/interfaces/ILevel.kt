@@ -31,6 +31,8 @@ abstract class ILevel {
     abstract fun start(stage: Stage?)
     abstract fun stop()
 
+    var isSuspended = false
+
     open fun render() {
         gameObjects.forEach({ c: IGameObject ->
             c.gc.save()
@@ -41,11 +43,13 @@ abstract class ILevel {
 
     open fun update() {
         val removeLaterQueue = mutableListOf<IGameObject>()
-        gameObjects.forEach({ o: IGameObject ->
-            o.update()
-            if (o.dead)
-                removeLaterQueue.add(o)
-        })
+        if (!isSuspended) {
+            gameObjects.forEach({ o: IGameObject ->
+                o.update()
+                if (o.dead)
+                    removeLaterQueue.add(o)
+            })
+        }
 
         addLaterQueue.forEach { o: IGameObject -> gameObjects.add(o) }
         addLaterQueue.map { o: IGameObject -> o as? IController }
@@ -54,5 +58,15 @@ abstract class ILevel {
         addLaterQueue.clear()
 
         removeLaterQueue.forEach { o: IGameObject -> gameObjects.remove(o) }
+
+        // TODO: Add the "auxillary updates" for the dialog system here
+    }
+
+    fun suspend() {
+        isSuspended = true
+    }
+
+    fun resume() {
+        isSuspended = false
     }
 }
