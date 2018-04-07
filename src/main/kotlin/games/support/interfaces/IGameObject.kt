@@ -2,6 +2,7 @@ package games.support.interfaces
 
 import games.rougelike.objects.BackgroundObject
 import games.support.Grid
+import games.support.LevelManager
 import games.support.Util
 import javafx.geometry.BoundingBox
 import javafx.scene.canvas.GraphicsContext
@@ -76,7 +77,7 @@ abstract class IGameObject(val gc: GraphicsContext) {
     abstract fun render()
     abstract fun update()
 
-    fun intersectingGridSquares(grid: Array<Array<BackgroundObject>>, x: Double = this.x, y: Double = this.y): List<BackgroundObject> {
+    fun intersectingGridSquares(grid: Array<Array<BackgroundObject>> = LevelManager.current.grid.map, x: Double = this.x, y: Double = this.y): List<BackgroundObject> {
         return Util.integersInRange(max(0.0, Grid.mapToGrid(x)), min(grid.size.toDouble(), Grid.mapToGrid(x + width))).map { gx ->
             Util.integersInRange(max(0.0, Grid.mapToGrid(y)), min(grid.size.toDouble(), Grid.mapToGrid(y + height))).map { gy ->
                 grid[gx][gy]
@@ -84,7 +85,7 @@ abstract class IGameObject(val gc: GraphicsContext) {
         }.flatten()
     }
 
-    fun moveOnGrid(newx: Double, newy: Double, grid: Array<Array<BackgroundObject>>, slide: Boolean = true): Boolean {
+    fun moveOnGrid(newx: Double, newy: Double, grid: Array<Array<BackgroundObject>> = LevelManager.current.grid.map, slide: Boolean = true): Boolean {
         val newPositionTraversable = intersectingGridSquares(grid, newx, newy).all { o: BackgroundObject -> o.type.traversable }
 
         return when {

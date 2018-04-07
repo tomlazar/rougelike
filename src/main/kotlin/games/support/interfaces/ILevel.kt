@@ -73,4 +73,19 @@ abstract class ILevel {
     fun toggleSuspended() {
         isSuspended = !isSuspended
     }
+
+    fun showPrompts(vararg prompts: String) {
+        suspend()
+
+        for (prompt in prompts) {
+            println(prompt)
+        }
+
+        Thread({
+            // TODO: replace with "wait for prompts to be done printing / the user to be done with the prompts"
+            Thread.sleep(2000)
+
+            resume()
+        }).start()
+    }
 }

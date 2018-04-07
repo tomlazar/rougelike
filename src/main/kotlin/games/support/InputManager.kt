@@ -124,7 +124,7 @@ class InputManager : IController {
 
         private fun <Ev : InputEvent> addListener(target: Scene, input: Input<*, Ev>, inputType: InputEventType, action: () -> Unit) {
             target.addEventHandler(input.convertEventType(inputType), { event: Ev? ->
-                if (input.matchesEvent(event!!))
+                if (!LevelManager.current.isSuspended && input.matchesEvent(event!!))
                     action.invoke()
             })
         }

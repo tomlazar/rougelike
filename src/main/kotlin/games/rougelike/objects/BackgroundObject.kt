@@ -20,6 +20,8 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
     var push: PushLocation? = null
 
+    var eventTriggers = mutableListOf<Events.GameEvent>()
+
     class PushLocation(val gridx: Double, val gridy: Double)
 
     enum class BackgroundType(val id: Int, val traversable: Boolean, val fill: Color, val fill2: Color = Color.TRANSPARENT) {
@@ -48,6 +50,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         EQUIPMENT_SPAWN(3),
         ORIENTATION(4),
         PUSHABLE(5),
+        EVENT_TRIGGER(6),
         ;
 
         companion object {
@@ -100,6 +103,9 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                     }
                     BackgroundOption.PUSHABLE -> {
                         it.push = PushLocation(split[1].toDouble(), split[2].toDouble())
+                    }
+                    BackgroundOption.EVENT_TRIGGER -> {
+                        it.eventTriggers.add(Events.GameEvent.fromId(split[1].toInt())!!)
                     }
                 }
             }

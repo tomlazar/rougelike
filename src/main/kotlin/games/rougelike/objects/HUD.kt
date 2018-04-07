@@ -55,8 +55,6 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
         val width = Text(text).layoutBounds.width
         gc.fillText(text, current, 2.0 + height)
         current += sep + width
-
-
     }
 
     override fun update() {
