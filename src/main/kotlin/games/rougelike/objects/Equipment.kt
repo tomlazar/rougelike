@@ -8,7 +8,7 @@ import games.support.interfaces.IGameObject
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
 
-class Equipment(gc: GraphicsContext, gridx: Int, gridy: Int, val type: EquipmentType) : IGameObject(gc) {
+class Equipment(gc: GraphicsContext, gridx: Int, gridy: Int, val type: EquipmentType, var pickupEvent: List<Events.GameEvent>? = null) : IGameObject(gc) {
     override var height: Double = Grid.cellSize / 2
     override var width: Double = Grid.cellSize / 2
     override var x: Double = Grid.mapFromGrid(gridx.toDouble()) + Grid.cellSize / 2 - width / 2
@@ -38,6 +38,7 @@ class Equipment(gc: GraphicsContext, gridx: Int, gridy: Int, val type: Equipment
         if (this.collidesWith(LevelManager.current.player)) {
             acquiredEquipment[this.type] = true
             this.dead = true
+            pickupEvent?.forEach { e -> e.trigger() }
         }
     }
 

@@ -62,8 +62,8 @@ open class Junker : IGameObject, IController {
         gc.fill = Color.GRAY
         gc.fillRect(x, y, width, height)
 
-        if (push == null && this.distanceTo(LevelManager.current.player) <= Player.pushRange && canPush) {
-            if (renderPushButtonDelay == 0) {
+        if (Equipment.acquiredEquipment[Equipment.EquipmentType.PUSH]!! && push == null && this.distanceTo(LevelManager.current.player) <= Player.pushRange && canPush) {
+            if (renderPushButtonDelay <= 0) {
                 gc.fill = Color.WHITE
                 gc.stroke = Color.BLACK
                 gc.fillRoundRect(x + width / 4, y + width / 4, width / 2, height / 2, 5.0, 5.0)

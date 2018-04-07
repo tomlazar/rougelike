@@ -87,7 +87,7 @@ abstract class ILevel {
             // TODO: display prompts, and wait for them to be done
             for (prompt in prompts) {
                 println("${prompt.type.name.toLowerCase().capitalize()}: ${prompt.text}")
-                Thread.sleep(1000)
+                //Thread.sleep(1000)
             }
             Thread.sleep(1000)
 
