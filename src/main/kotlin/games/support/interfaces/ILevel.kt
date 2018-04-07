@@ -74,17 +74,24 @@ abstract class ILevel {
         isSuspended = !isSuspended
     }
 
-    fun showPrompts(vararg prompts: String) {
+    enum class PromptType {
+        MESSAGE, NARRATION, THINKING, DIALOGUE, TERMINAL;
+    }
+
+    class Prompt(val type: PromptType, val text: String)
+
+    fun showPrompts(vararg prompts: Prompt, callback: (() -> Unit)? = null) {
         suspend()
 
-        for (prompt in prompts) {
-            println(prompt)
-        }
-
         Thread({
-            // TODO: replace with "wait for prompts to be done printing / the user to be done with the prompts"
-            Thread.sleep(2000)
+            // TODO: display prompts, and wait for them to be done
+            for (prompt in prompts) {
+                println("${prompt.type.name.toLowerCase().capitalize()}: ${prompt.text}")
+                Thread.sleep(1000)
+            }
+            Thread.sleep(1000)
 
+            callback?.invoke()
             resume()
         }).start()
     }

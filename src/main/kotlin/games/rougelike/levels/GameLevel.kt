@@ -80,7 +80,7 @@ class GameLevel : ILevel() {
                     player.gridy = gridy.toDouble()
                 }
                 if (gridcell.junkerSpawnType != null) {
-                    val speed = Grid.cellSize * (Random().nextDouble() + 3.0)
+                    val speed = Grid.cellSize * (Random().nextDouble() + 1.5)
                     val junker =
                             when (gridcell.junkerSpawnType!!) {
                                 BackgroundObject.JunkerType.SHIELD ->

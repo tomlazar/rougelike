@@ -49,12 +49,15 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
         }
 
         gc.fill = Color.WHITE
-        val text = Equipment.EquipmentType.values()
-                .filter { t -> Equipment.acquiredEquipment[t]!! }.joinToString(",  ", prefix = "Equipment:  ") { t -> t.description }
-        val height = Text(text).layoutBounds.height
-        val width = Text(text).layoutBounds.width
-        gc.fillText(text, current, 2.0 + height)
-        current += sep + width
+        val acquiredEquipment = Equipment.EquipmentType.values()
+                .filter { t -> Equipment.acquiredEquipment[t]!! }
+        if (!acquiredEquipment.isEmpty()) {
+            val text = acquiredEquipment.joinToString(",  ", prefix = "Equipment:  ") { t -> t.description }
+            val height = Text(text).layoutBounds.height
+            val width = Text(text).layoutBounds.width
+            gc.fillText(text, current, 2.0 + height)
+            current += sep + width
+        }
     }
 
     override fun update() {

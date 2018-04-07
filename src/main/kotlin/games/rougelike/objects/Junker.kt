@@ -57,23 +57,28 @@ open class Junker : IGameObject, IController {
         })
     }
 
+    var renderPushButtonDelay = 2
     override fun render() {
         gc.fill = Color.GRAY
         gc.fillRect(x, y, width, height)
 
         if (push == null && this.distanceTo(LevelManager.current.player) <= Player.pushRange && canPush) {
-            gc.fill = Color.WHITE
-            gc.stroke = Color.BLACK
-            gc.fillRoundRect(x + width / 4, y + width / 4, width / 2, height / 2, 5.0, 5.0)
-            gc.strokeRoundRect(x + width / 4, y + width / 4, width / 2, height / 2, 5.0, 5.0)
+            if (renderPushButtonDelay == 0) {
+                gc.fill = Color.WHITE
+                gc.stroke = Color.BLACK
+                gc.fillRoundRect(x + width / 4, y + width / 4, width / 2, height / 2, 5.0, 5.0)
+                gc.strokeRoundRect(x + width / 4, y + width / 4, width / 2, height / 2, 5.0, 5.0)
 
-            gc.fill = Color.BLACK
-            val text = if (InputBinding.PUSH.input.first() is KeyInput) InputBinding.PUSH.input.first().toString() else "*"
+                gc.fill = Color.BLACK
+                val text = if (InputBinding.PUSH.input.first() is KeyInput) InputBinding.PUSH.input.first().toString() else "*"
 
-            val textObj = Text(text)
-            textObj.textAlignment = TextAlignment.CENTER
-            gc.fillText(text, x + width / 2 - (textObj.layoutBounds.width / 2), y + height / 2 + (textObj.layoutBounds.height / 3))
-        }
+                val textObj = Text(text)
+                textObj.textAlignment = TextAlignment.CENTER
+                gc.fillText(text, x + width / 2 - (textObj.layoutBounds.width / 2), y + height / 2 + (textObj.layoutBounds.height / 3))
+            } else
+                renderPushButtonDelay--
+        } else
+            renderPushButtonDelay = 2
 
         gc.lineWidth = 1.5
         val targetSymbolRadius = radius * sqrt(2.0) + gc.lineWidth + 3

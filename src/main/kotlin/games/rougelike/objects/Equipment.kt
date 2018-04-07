@@ -18,7 +18,7 @@ class Equipment(gc: GraphicsContext, gridx: Int, gridy: Int, val type: Equipment
         val acquiredEquipment = hashMapOf(*EquipmentType.values().map { t -> Pair(t, false) }.toTypedArray())
 
         init {
-            acquiredEquipment[EquipmentType.PUSH] = true
+            //acquiredEquipment[EquipmentType.PUSH] = true
         }
     }
 

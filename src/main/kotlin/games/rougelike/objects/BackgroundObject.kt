@@ -157,17 +157,17 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                         Orientation.EAST -> {
                             gc.fillRect(x + Grid.cellSize / 4, y, Grid.cellSize / 2, Grid.cellSize)
                             gc.fill = BackgroundType.GAP.fill
-                            gc.fillRect(x, y + Grid.cellSize * 3 / 4, Grid.cellSize / 4, Grid.cellSize)
+                            gc.fillRect(x + Grid.cellSize * 3 / 4, y, Grid.cellSize / 4, Grid.cellSize)
                         }
                         Orientation.SOUTH -> {
                             gc.fillRect(x, y + Grid.cellSize / 4, Grid.cellSize, Grid.cellSize / 2)
                             gc.fill = BackgroundType.GAP.fill
-                            gc.fillRect(x + Grid.cellSize * 3 / 4, y, Grid.cellSize, Grid.cellSize / 4)
+                            gc.fillRect(x, y + Grid.cellSize * 3 / 4, Grid.cellSize, Grid.cellSize / 4)
                         }
                         Orientation.WEST -> {
                             gc.fillRect(x + Grid.cellSize / 4, y, Grid.cellSize / 2, Grid.cellSize)
                             gc.fill = BackgroundType.GAP.fill
-                            gc.fillRect(x, y + Grid.cellSize, Grid.cellSize / 4, Grid.cellSize)
+                            gc.fillRect(x, y, Grid.cellSize / 4, Grid.cellSize)
                         }
                     }
                 }
