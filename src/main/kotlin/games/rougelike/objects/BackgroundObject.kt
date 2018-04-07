@@ -31,6 +31,8 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         STAIR_UP(5, true, Color.AZURE),
         DOOR(6, true, GAP.fill, Color.AQUA),
         BANISTER(10, false, Color.TAN, Color.SADDLEBROWN.darker()),
+        WINDOW(11, false, FLOOR.fill, Color.SILVER),
+        WALL_WINDOW(12, false, FLOOR.fill, Color.SILVER),
         DESK(13, false, Color.LIGHTSLATEGRAY, Color.DIMGRAY)
         ;
 
@@ -62,7 +64,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
     }
 
     enum class Orientation(val id: Int) {
-        NORTH(0), EAST(1), SOUTH(2), WEST(3), NORTH_EAST(4), SOUTH_EAST(5), SOUTH_WEST(6), NORTH_WEST(7);
+        NORTH(0), EAST(1), SOUTH(2), WEST(3);
 
         companion object {
             fun fromId(id: Int) = Orientation.values().find { t: Orientation -> t.id == id }
@@ -119,13 +121,14 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         //    gc.fill = Color.AQUA
 
         gc.fillRect(x, y, Grid.cellSize, Grid.cellSize)
-        gc.strokeRect(x, y, Grid.cellSize, Grid.cellSize)
+        if (this.type.traversable)
+            gc.strokeRect(x, y, Grid.cellSize, Grid.cellSize)
 
 
         // second layer
         gc.fill = this.type.fill2
         when (this.type) {
-            BackgroundType.BANISTER -> {
+            BackgroundType.BANISTER, BackgroundType.WINDOW -> {
                 if (orientations.size > 0)
                     gc.fillRect(x + Grid.cellSize / 4, y + Grid.cellSize / 4, Grid.cellSize / 2, Grid.cellSize / 2)
                 for (o in orientations) {
@@ -134,7 +137,31 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                         Orientation.EAST -> gc.fillRect(x + Grid.cellSize / 2, y + Grid.cellSize / 4, Grid.cellSize / 2, Grid.cellSize / 2)
                         Orientation.SOUTH -> gc.fillRect(x + Grid.cellSize / 4, y + Grid.cellSize / 2, Grid.cellSize / 2, Grid.cellSize / 2)
                         Orientation.WEST -> gc.fillRect(x, y + Grid.cellSize / 4, Grid.cellSize / 2, Grid.cellSize / 2)
-                        else -> {
+                    }
+                }
+            }
+            BackgroundType.WALL_WINDOW -> {
+                for (o in orientations) {
+                    when (o) {
+                        Orientation.NORTH -> {
+                            gc.fillRect(x, y + Grid.cellSize / 4, Grid.cellSize, Grid.cellSize / 2)
+                            gc.fill = BackgroundType.GAP.fill
+                            gc.fillRect(x, y, Grid.cellSize, Grid.cellSize / 4)
+                        }
+                        Orientation.EAST -> {
+                            gc.fillRect(x + Grid.cellSize / 4, y, Grid.cellSize / 2, Grid.cellSize)
+                            gc.fill = BackgroundType.GAP.fill
+                            gc.fillRect(x, y + Grid.cellSize * 3 / 4, Grid.cellSize / 4, Grid.cellSize)
+                        }
+                        Orientation.SOUTH -> {
+                            gc.fillRect(x, y + Grid.cellSize / 4, Grid.cellSize, Grid.cellSize / 2)
+                            gc.fill = BackgroundType.GAP.fill
+                            gc.fillRect(x + Grid.cellSize * 3 / 4, y, Grid.cellSize, Grid.cellSize / 4)
+                        }
+                        Orientation.WEST -> {
+                            gc.fillRect(x + Grid.cellSize / 4, y, Grid.cellSize / 2, Grid.cellSize)
+                            gc.fill = BackgroundType.GAP.fill
+                            gc.fillRect(x, y + Grid.cellSize, Grid.cellSize / 4, Grid.cellSize)
                         }
                     }
                 }
@@ -150,8 +177,6 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                             Orientation.EAST -> gc.fillRect(x + Grid.cellSize - doorwidth, y, doorwidth, Grid.cellSize)
                             Orientation.SOUTH -> gc.fillRect(x, y + Grid.cellSize - doorwidth, Grid.cellSize, doorwidth)
                             Orientation.WEST -> gc.fillRect(x, y, doorwidth, Grid.cellSize)
-                            else -> {
-                            }
                         }
                     }
                 }

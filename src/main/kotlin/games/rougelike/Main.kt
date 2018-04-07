@@ -11,7 +11,7 @@ class Main : Application() {
     override fun start(stage: Stage?) {
         LevelManager.stage = stage
         stage!!.title = "ROUGELIKE THE MSCS ADVENTURE PARTY HAPPY FUNTIME GAME"
-        LevelManager.current = GameLevel.getLevel("Dennis")!!
+        LevelManager.current = GameLevel.getLevel("2")!!
     }
 }
 

@@ -37,8 +37,6 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
         gc.fill = Color.RED
         gc.stroke = Color.RED
         for (i in 0 until MAX_CORRUPTION) {
-            if (i == 0)
-                continue
             gc.strokeRect(current, 2.0, barWidth, 36.0)
             if (i <= corruption)
                 if (i == corruption.toInt()) {
