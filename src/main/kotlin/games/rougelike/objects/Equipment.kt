@@ -1,6 +1,8 @@
 package games.rougelike.objects
 
 import games.support.Grid
+import games.support.InputBinding
+import games.support.InputManager
 import games.support.LevelManager
 import games.support.interfaces.IGameObject
 import javafx.scene.canvas.GraphicsContext
@@ -21,7 +23,8 @@ class Equipment(gc: GraphicsContext, gridx: Int, gridy: Int, val type: Equipment
     }
 
     enum class EquipmentType(val id: Int, val description: String) {
-        HACK(0, "Hack (Mouse1 + Space)"), GRENADE(1, "EMP Emitter (Mouse2)");
+        HACK(0, "Hack (${InputBinding.SET_TARGET.input.first()} + ${InputBinding.HACK.input.first()})"),
+        GRENADE(1, "EMP Emitter (${InputBinding.GRENADE.input.first()})");
         companion object { fun fromId(id: Int) = EquipmentType.values().find { t: EquipmentType -> t.id == id } }
     }
 

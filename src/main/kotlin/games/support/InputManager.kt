@@ -45,6 +45,10 @@ class KeyInput(val key: KeyCode) : Input<KeyCode, KeyEvent>(key) {
     }
 
     override fun extractCodeFromEvent(event: KeyEvent): KeyCode = event.code
+
+    override fun toString(): String {
+        return key.name.toLowerCase().capitalize()
+    }
 }
 
 class MouseInput(val button: MouseButton) : Input<MouseButton, MouseEvent>(button) {
@@ -55,6 +59,17 @@ class MouseInput(val button: MouseButton) : Input<MouseButton, MouseEvent>(butto
     }
 
     override fun extractCodeFromEvent(event: MouseEvent): MouseButton = event.button
+
+    override fun toString(): String {
+        return "Mouse${
+            when (button) {
+                MouseButton.PRIMARY -> 1
+                MouseButton.SECONDARY -> 2
+                MouseButton.MIDDLE -> 3
+                else -> button.ordinal
+            }
+        }"
+    }
 }
 
 class InputManager : IController {
