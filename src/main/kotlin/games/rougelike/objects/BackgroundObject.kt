@@ -18,6 +18,10 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
     var orientations = mutableListOf<Orientation>()
 
+    var push: PushLocation? = null
+
+    class PushLocation(val gridx: Double, val gridy: Double)
+
     enum class BackgroundType(val id: Int, val traversable: Boolean, val fill: Color, val fill2: Color = Color.TRANSPARENT) {
         DEFAULT(-1, true, Color.PINK),
         GAP(0, false, Color.WHITE),
@@ -40,7 +44,9 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         JUNKER_SPAWN(1),
         PLAYER_SPAWN(2),
         EQUIPMENT_SPAWN(3),
-        ORIENTATION(4);
+        ORIENTATION(4),
+        PUSHABLE(5),
+        ;
 
         companion object {
             fun fromId(id: Int) = BackgroundOption.values().find { t: BackgroundOption -> t.id == id }
@@ -89,6 +95,9 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                                 split.slice(1 until split.size)
                                         .map({ x -> Orientation.fromId(x.toInt())!! })
                         )
+                    }
+                    BackgroundOption.PUSHABLE -> {
+                        it.push = PushLocation(split[1].toDouble(), split[2].toDouble())
                     }
                 }
             }

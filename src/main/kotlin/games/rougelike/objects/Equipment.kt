@@ -18,11 +18,12 @@ class Equipment(gc: GraphicsContext, gridx: Int, gridy: Int, val type: Equipment
         val acquiredEquipment = hashMapOf(*EquipmentType.values().map { t -> Pair(t, false) }.toTypedArray())
 
         init {
-            //acquiredEquipment[EquipmentType.HACK] = true
+            acquiredEquipment[EquipmentType.PUSH] = true
         }
     }
 
     enum class EquipmentType(val id: Int, val description: String) {
+        PUSH(-1, "Push (${InputBinding.PUSH.input.first()})"),
         HACK(0, "Hack (${InputBinding.SET_TARGET.input.first()} + ${InputBinding.HACK.input.first()})"),
         GRENADE(1, "EMP Emitter (${InputBinding.GRENADE.input.first()})");
         companion object { fun fromId(id: Int) = EquipmentType.values().find { t: EquipmentType -> t.id == id } }

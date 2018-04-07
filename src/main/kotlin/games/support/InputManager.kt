@@ -12,6 +12,7 @@ enum class InputBinding(vararg val input: Input<*, *>) {
     RIGHT(KeyInput(KeyCode.D), KeyInput(KeyCode.RIGHT)),
     UP(KeyInput(KeyCode.W), KeyInput(KeyCode.UP)),
     DOWN(KeyInput(KeyCode.S), KeyInput(KeyCode.DOWN)),
+    PUSH(KeyInput(KeyCode.F)),
     SET_TARGET(MouseInput(MouseButton.PRIMARY)),
     HACK(KeyInput(KeyCode.SPACE)),
     GRENADE(MouseInput(MouseButton.SECONDARY)),

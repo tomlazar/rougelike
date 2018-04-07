@@ -68,9 +68,10 @@ abstract class IGameObject(val gc: GraphicsContext) {
         return tangentialOffsetLow <= maxTangentialDistance && -tangentialOffsetHigh <= maxTangentialDistance
     }
 
-    fun distanceTo(other: IGameObject): Double {
-        return sqrt(pow(x - other.x, 2.0) + pow(y - other.y, 2.0))
+    fun distanceTo(otherX: Double, otherY: Double): Double {
+        return sqrt(pow(x - otherX, 2.0) + pow(y - otherY, 2.0))
     }
+    fun distanceTo(other: IGameObject) = distanceTo(other.x, other.y)
 
     abstract fun render()
     abstract fun update()

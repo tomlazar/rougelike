@@ -28,6 +28,10 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     var immune = 0
     val immuneTime = (FPS / 2).toInt()
 
+    companion object {
+        val pushRange = Grid.cellSize * 2
+    }
+
     override fun addEvents(target: Scene) {
         InputManager.addListener(target, InputBinding.GRENADE, InputEventType.CLICKED, {
             if (Equipment.acquiredEquipment[Equipment.EquipmentType.GRENADE]!!) {
@@ -36,6 +40,15 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
                 LevelManager.current.addLater(Grenade(gc, x, y,
                         airtime = min(Grenade.airtime, sqrt(pow(dx, 2.0) + pow(dy, 2.0)) / Grenade.speed),
                         direction = atan2(dy, dx)))
+            }
+        })
+        InputManager.addListener(target, InputBinding.PUSH, InputEventType.CLICKED, {
+            if (Equipment.acquiredEquipment[Equipment.EquipmentType.PUSH]!!) {
+                val pushJunk = LevelManager.current.currentGameObjects
+                        .filter { o -> o is Junker }.map { o -> o as Junker }
+                        .filter { j -> j.distanceTo(this) <= pushRange && j.canPush }
+                        .minBy { j -> j.distanceTo(this) }
+                pushJunk?.tryPush()
             }
         })
     }

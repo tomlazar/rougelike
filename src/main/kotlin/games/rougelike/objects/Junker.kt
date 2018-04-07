@@ -10,6 +10,8 @@ import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import javafx.scene.shape.ArcType
+import javafx.scene.text.Text
+import javafx.scene.text.TextAlignment
 import java.lang.Math.pow
 import java.util.*
 import kotlin.math.*
@@ -59,6 +61,20 @@ open class Junker : IGameObject, IController {
         gc.fill = Color.GRAY
         gc.fillRect(x, y, width, height)
 
+        if (push == null && this.distanceTo(LevelManager.current.player) <= Player.pushRange && canPush) {
+            gc.fill = Color.WHITE
+            gc.stroke = Color.BLACK
+            gc.fillRoundRect(x + width / 4, y + width / 4, width / 2, height / 2, 5.0, 5.0)
+            gc.strokeRoundRect(x + width / 4, y + width / 4, width / 2, height / 2, 5.0, 5.0)
+
+            gc.fill = Color.BLACK
+            val text = if (InputBinding.PUSH.input.first() is KeyInput) InputBinding.PUSH.input.first().toString() else "*"
+
+            val textObj = Text(text)
+            textObj.textAlignment = TextAlignment.CENTER
+            gc.fillText(text, x + width / 2 - (textObj.layoutBounds.width / 2), y + height / 2 + (textObj.layoutBounds.height / 3))
+        }
+
         gc.lineWidth = 1.5
         val targetSymbolRadius = radius * sqrt(2.0) + gc.lineWidth + 3
         gc.stroke = Color.DARKRED
@@ -71,20 +87,28 @@ open class Junker : IGameObject, IController {
     }
 
     override fun update() {
-        if (target != null) {
-            if (!tracking && distanceTo(target!!) < targetingDistance)
-                tracking = true
-            if (tracking && distanceTo(target!!) > trackingDistance)
-                tracking = false
-        }
+        if (push != null) {
+            val move = pushSpeed / FPS / distanceTo(Grid.mapFromGrid(this.push!!.gridx), Grid.mapFromGrid(this.push!!.gridy))
+            this.x = this.x + (Grid.mapFromGrid(this.push!!.gridx) - this.x) * move
+            this.y = this.y + (Grid.mapFromGrid(this.push!!.gridy) - this.y) * move
+            if (this.intersectingGridSquares(LevelManager.current.grid.map).all { o -> o.type == BackgroundObject.BackgroundType.GAP })
+                this.kill()
+        } else {
+            if (target != null) {
+                if (!tracking && distanceTo(target!!) < targetingDistance)
+                    tracking = true
+                if (tracking && distanceTo(target!!) > trackingDistance)
+                    tracking = false
+            }
 
-        update_Move()
+            update_Move()
 
-        if (hackingProgress >= hackTime)
-            this.kill()
+            if (hackingProgress >= hackTime)
+                this.kill()
 
-        if (this.collidesWith(LevelManager.current.player)) {
-            LevelManager.current.player.hit(0.5)
+            if (this.collidesWith(LevelManager.current.player)) {
+                LevelManager.current.player.hit(0.5)
+            }
         }
     }
 
@@ -136,6 +160,20 @@ open class Junker : IGameObject, IController {
                 moveOnGrid(newX, newY, LevelManager.current.grid.map)
             }
         }
+    }
+
+    var push : BackgroundObject.PushLocation? = null
+    val pushSpeed = Grid.cellSize * 8
+
+    val canPush get() = this.intersectingGridSquares(LevelManager.current.grid.map).any { o -> o.push != null }
+
+    fun tryPush() : Boolean {
+        val pushOffset = this.intersectingGridSquares(LevelManager.current.grid.map).firstOrNull { o -> o.push != null }?.push
+        return if (pushOffset != null) {
+            push = BackgroundObject.PushLocation(gridx + pushOffset.gridx, gridy + pushOffset.gridy)
+            true
+        } else
+            false
     }
 
     fun kill() {
