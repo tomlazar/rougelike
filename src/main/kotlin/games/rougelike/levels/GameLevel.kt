@@ -42,6 +42,8 @@ class GameLevel : ILevel() {
     var levelId: String = ""
 
     fun build(gridfile: String) {
+        println("Loading level: $gridfile")
+
         // Create the main game window
         levelId = LEVEL_REGEX.matchEntire(gridfile)!!.groupValues[1]
         val map = Util.transpose(Util.readCsv(gridfile))
@@ -50,7 +52,7 @@ class GameLevel : ILevel() {
                         BackgroundObject.fromCode(cell)
                     }.toTypedArray()
                 }.toTypedArray()
-        val gameCanvas = Canvas(Grid.mapFromGrid(map.size.toDouble()), Grid.mapFromGrid(map[0].size.toDouble()))
+        val gameCanvas = Canvas(Grid.mapFromGrid(map.size.toDouble()), Grid.mapFromGrid(if (map.isEmpty()) 0.0 else map[0].size.toDouble()))
         val gameScene = SubScene(Group(gameCanvas), WIDTH, HEIGHT)
         player = Player(gameCanvas.graphicsContext2D)
         camera = TrackingCamera(gameCanvas.graphicsContext2D, player)
@@ -118,6 +120,7 @@ class GameLevel : ILevel() {
         stage!!.scene = this.scene
         stage.width = WIDTH
         stage.height = HEIGHT + HUD.HEIGHT
+        this.update()
         this.render()
         stage.show()
         loop.play()

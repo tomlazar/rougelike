@@ -12,7 +12,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
     var isPlayerSpawn = false
 
-    var junkerSpawnType : JunkerType? = null
+    var junkerSpawnType: JunkerType? = null
 
     var equipmentSpawn: Equipment.EquipmentType? = null
 
@@ -25,12 +25,14 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         WALL(2, false, Color.BLACK),
         STAIR_DOWN(4, true, Color.AZURE),
         STAIR_UP(5, true, Color.AZURE),
-        DOOR(6, true, Color.AZURE),
+        DOOR(6, true, GAP.fill, Color.AQUA),
         BANISTER(10, false, Color.TAN, Color.SADDLEBROWN.darker()),
         DESK(13, false, Color.LIGHTSLATEGRAY, Color.DIMGRAY)
         ;
 
-        companion object { fun fromId(id: Int) = BackgroundType.values().find { t: BackgroundType -> t.id == id } }
+        companion object {
+            fun fromId(id: Int) = BackgroundType.values().find { t: BackgroundType -> t.id == id }
+        }
     }
 
     enum class BackgroundOption(val id: Int) {
@@ -40,15 +42,25 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         EQUIPMENT_SPAWN(3),
         ORIENTATION(4);
 
-        companion object { fun fromId(id: Int) = BackgroundOption.values().find { t: BackgroundOption -> t.id == id } }
+        companion object {
+            fun fromId(id: Int) = BackgroundOption.values().find { t: BackgroundOption -> t.id == id }
+        }
     }
+
     enum class JunkerType(val id: Int) {
         NORMAL(0), SHIELD(1);
-        companion object { fun fromId(id: Int) = JunkerType.values().find { t: JunkerType -> t.id == id } }
+
+        companion object {
+            fun fromId(id: Int) = JunkerType.values().find { t: JunkerType -> t.id == id }
+        }
     }
+
     enum class Orientation(val id: Int) {
         NORTH(0), EAST(1), SOUTH(2), WEST(3), NORTH_EAST(4), SOUTH_EAST(5), SOUTH_WEST(6), NORTH_WEST(7);
-        companion object { fun fromId(id: Int) = Orientation.values().find { t: Orientation -> t.id == id } }
+
+        companion object {
+            fun fromId(id: Int) = Orientation.values().find { t: Orientation -> t.id == id }
+        }
     }
 
     companion object {
@@ -94,8 +106,8 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
             else -> gc.stroke = Color.BLACK
         }
 
-        if (this.teleporter != null)
-            gc.fill = Color.AQUA
+        //if (this.teleporter != null)
+        //    gc.fill = Color.AQUA
 
         gc.fillRect(x, y, Grid.cellSize, Grid.cellSize)
         gc.strokeRect(x, y, Grid.cellSize, Grid.cellSize)
@@ -118,7 +130,25 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                     }
                 }
             }
+            BackgroundType.DOOR -> {
+                if (orientations.isEmpty())
+                    gc.fillRect(x, y, Grid.cellSize, Grid.cellSize)
+                else {
+                    val doorwidth = Grid.cellSize / 6
+                    for (o in orientations) {
+                        when (o) {
+                            Orientation.NORTH -> gc.fillRect(x, y, Grid.cellSize, doorwidth)
+                            Orientation.EAST -> gc.fillRect(x + Grid.cellSize - doorwidth, y, doorwidth, Grid.cellSize)
+                            Orientation.SOUTH -> gc.fillRect(x, y + Grid.cellSize - doorwidth, Grid.cellSize, doorwidth)
+                            Orientation.WEST -> gc.fillRect(x, y, doorwidth, Grid.cellSize)
+                            else -> {
+                            }
+                        }
+                    }
+                }
+            }
             else -> {
+
             }
         }
 

@@ -7,11 +7,11 @@ import javafx.scene.Scene
 import javafx.scene.input.*
 
 
-enum class InputBinding(val input: Input<*, *>) {
-    LEFT(KeyInput(KeyCode.A)),
-    RIGHT(KeyInput(KeyCode.D)),
-    UP(KeyInput(KeyCode.W)),
-    DOWN(KeyInput(KeyCode.S)),
+enum class InputBinding(vararg val input: Input<*, *>) {
+    LEFT(KeyInput(KeyCode.A), KeyInput(KeyCode.LEFT)),
+    RIGHT(KeyInput(KeyCode.D), KeyInput(KeyCode.RIGHT)),
+    UP(KeyInput(KeyCode.W), KeyInput(KeyCode.UP)),
+    DOWN(KeyInput(KeyCode.S), KeyInput(KeyCode.DOWN)),
     SET_TARGET(MouseInput(MouseButton.PRIMARY)),
     HACK(KeyInput(KeyCode.SPACE)),
     GRENADE(MouseInput(MouseButton.SECONDARY)),
@@ -68,8 +68,8 @@ class InputManager : IController {
     private var _mouseY = 0.0
     val mouseY get() = _mouseY
 
-    private fun isInputActive(input: Input<*, *>): Boolean = inputActive.contains(input) && inputActive[input]!!
-    fun isInputActive(input: InputBinding): Boolean = isInputActive(input.input)
+    private fun isInputActive(vararg input: Input<*, *>): Boolean = input.any { input -> inputActive.contains(input) && inputActive[input]!! }
+    fun isInputActive(input: InputBinding): Boolean = isInputActive(*input.input)
 
     fun isKeyDown(code: KeyCode) = isInputActive(KeyInput(code))
     fun isMouseDown(button: MouseButton) = isInputActive(MouseInput(button))
@@ -114,9 +114,8 @@ class InputManager : IController {
         }
 
         fun addListener(target: Scene, input: InputBinding, inputType: InputEventType, action: () -> Unit) =
-                addListener(target, input.input, inputType, action)
+                input.input.forEach { input -> addListener(target, input, inputType, action) }
     }
 
-    private fun inputNegPos(neg: Input<*, *>, pos: Input<*, *>) = (if (isInputActive(neg)) -1.0 else 0.0) + (if (isInputActive(pos)) 1.0 else 0.0)
-    fun inputNegPos(neg: InputBinding, pos: InputBinding) = inputNegPos(neg.input, pos.input)
+    fun inputNegPos(neg: InputBinding, pos: InputBinding) = (if (isInputActive(neg)) -1.0 else 0.0) + (if (isInputActive(pos)) 1.0 else 0.0)
 }

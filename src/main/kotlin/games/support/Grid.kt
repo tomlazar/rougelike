@@ -6,7 +6,7 @@ import javafx.scene.paint.Color
 
 class Grid(val gc: GraphicsContext, val map: Array<Array<BackgroundObject>> = defaultMap) {
     val mapWidth = map.size
-    val mapHeight = map[0].size
+    val mapHeight = if (mapWidth == 0) 0 else map[0].size
 
     companion object {
         val cellSize = 40.0
