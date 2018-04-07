@@ -9,6 +9,8 @@ import javafx.scene.Scene
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.input.KeyEvent
 import javafx.scene.paint.Color
+import java.lang.Math.pow
+import kotlin.math.*
 
 class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     override var height = 0.0
@@ -39,13 +41,19 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
 
     // region Hack Effect
     enum class HackEffect(val duration: Double) {
-        INACTIVE(0.0), WAITING(0.15 * FPS), ACTIVE(0.1 * FPS);
+        INACTIVE(0.0), HIT_WAITING(0.25 * FPS), MISS_WAITING(0.15 * FPS), HIT(0.15 * FPS), MISS(0.1 * FPS);
+
+        val isActive get() = this == HIT || this == MISS
 
         val nextState
-            get() = when (this) {
-                HackEffect.ACTIVE -> HackEffect.WAITING
-                else -> HackEffect.ACTIVE
-            }
+            get() =
+                when {
+                    this == HIT -> HIT_WAITING
+                    this == MISS -> MISS_WAITING
+                    canHitTargetNow -> HIT
+                    else -> MISS
+                }
+
     }
 
     var hackEffectState = HackEffect.INACTIVE
@@ -55,19 +63,27 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
 
     companion object {
         val hackEffectWeight = 5.0
-        fun setHackEffectVisuals(gc: GraphicsContext, weight: Double) {
+        fun setHackEffectVisuals(gc: GraphicsContext, weight: Double, effectState: HackEffect) {
             gc.lineWidth = hackEffectWeight * weight
-            gc.stroke = Color.SKYBLUE
+            gc.stroke = if (effectState == HackEffect.HIT) Color.DARKBLUE else Color.SKYBLUE
         }
 
         val hackRange get() = Junker.targetedJunker!!.targetingDistance
+
+        private val hackSourceX get () = LevelManager.current.player.x + LevelManager.current.player.width / 2
+        private val hackSourceY get () = LevelManager.current.player.y + LevelManager.current.player.height / 2
+
+        val canHitTargetNow get() =
+            Junker.targetedJunker != null
+                    && LevelManager.current.player.distanceTo(Junker.targetedJunker!!) < hackRange
+                    && (Junker.targetedJunker!! !is ShieldJunker // if we have a shield junker, check if it is shielded:
+                    || !(Junker.targetedJunker!! as ShieldJunker).protectsFrom(hackSourceX, hackSourceY))
     }
 
-    private val hackSourceX get () = LevelManager.current.player.x + LevelManager.current.player.width / 2
-    private val hackSourceY get () = LevelManager.current.player.y + LevelManager.current.player.height / 2
+
     fun render_hackEffect() {
-        if (hackEffectState == HackEffect.ACTIVE) {
-            setHackEffectVisuals(gc, 1.0 - hackEffectCounter / hackEffectState.duration)
+        if (hackEffectState.isActive) {
+            setHackEffectVisuals(gc, 1.0 - hackEffectCounter / hackEffectState.duration, hackEffectState)
             gc.strokeLine(hackSourceX, hackSourceY, hackEffectX, hackEffectY)
         }
     }
@@ -75,10 +91,8 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     fun update_hackEffect() {
         val hacking = Equipment.acquiredEquipment[Equipment.EquipmentType.HACK]!!
                 && LevelManager.inputManager.isInputActive(InputBinding.HACK) && Junker.targetedJunker != null
-                && LevelManager.current.player.distanceTo(Junker.targetedJunker!!) < hackRange
-        if (hacking && hackEffectState == HackEffect.ACTIVE
-                && (Junker.targetedJunker!! !is ShieldJunker // if we have a shield junker, check if it is shielded:
-                || !(Junker.targetedJunker!! as ShieldJunker).protectsFrom(hackSourceX, hackSourceY)))
+
+        if (hackEffectState == HackEffect.HIT && Junker.targetedJunker != null)
             Junker.targetedJunker!!.hackingProgress += 1
 
         hackEffectCounter += 1
@@ -88,11 +102,22 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
                 hackEffectState = hackEffectState.nextState
                 hackEffectX = Junker.targetedJunker!!.x + Junker.targetedJunker!!.width * Math.random()
                 hackEffectY = Junker.targetedJunker!!.y + Junker.targetedJunker!!.height * Math.random()
+
+                if (hackEffectState == HackEffect.MISS) {
+                    val dx = hackEffectX - hackSourceX
+                    val dy = hackEffectY - hackSourceY
+                    val dist = sqrt(pow(dx, 2.0) + pow(dy, 2.0))
+                    val missDistance = hackRange - max(Junker.targetedJunker!!.width, Junker.targetedJunker!!.height)
+                    if (dist > missDistance) {
+                        hackEffectX = hackSourceX + dx * missDistance / dist
+                        hackEffectY = hackSourceY + dy * missDistance / dist
+                    }
+                }
             } else {
                 hackEffectState = HackEffect.INACTIVE
             }
         }
     }
-    // endregion
+// endregion
 
 }

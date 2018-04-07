@@ -30,15 +30,15 @@ open class Junker : IGameObject, IController {
     companion object {
         var targetedJunker: Junker? = null
         fun switchTargetedJunker(j: Junker?) {
-            if (targetedJunker != null)
-                targetedJunker!!.hackingProgress = 0.0
+            //if (targetedJunker != null)
+            //    targetedJunker!!.hackingProgress = 0.0
             targetedJunker = j
         }
     }
 
     private val isBeingTargeted get() = this == targetedJunker
     var hackingProgress = 0.0
-    val hackTime = 1.5 * FPS * (Effects.HackEffect.ACTIVE.duration / (Effects.HackEffect.ACTIVE.duration + Effects.HackEffect.WAITING.duration))
+    val hackTime = 1.5 * FPS * (Effects.HackEffect.HIT.duration / (Effects.HackEffect.HIT.duration + Effects.HackEffect.HIT_WAITING.duration))
 
     constructor (gc: GraphicsContext, gridX: Double, gridY: Double, target: IGameObject? = null, speed: Double = Grid.cellSize * 1.5) : super(gc) {
         x = Grid.mapFromGrid(gridX)

@@ -32,13 +32,14 @@ class Grenade(gc: GraphicsContext, x: Double, y: Double, airtime: Double = Grena
     var counter = 0
     var exploding = false
     val explosionRadius get() = maxExplosionRadius * (counter / explodeTime)
+    var causedDamage = false
 
     override fun render() {
         if (!exploding) {
             gc.fill = Color.BLACK
             gc.fillOval(x, y, width, height)
         } else {
-            Effects.setHackEffectVisuals(gc, 1.0 - counter / explodeTime)
+            Effects.setHackEffectVisuals(gc, 1.0 - counter / explodeTime, if (causedDamage) Effects.HackEffect.HIT else Effects.HackEffect.MISS)
             gc.strokeOval(cx - explosionRadius, cy - explosionRadius, explosionRadius * 2, explosionRadius * 2)
         }
     }
@@ -73,8 +74,10 @@ class Grenade(gc: GraphicsContext, x: Double, y: Double, airtime: Double = Grena
             } else {
                 for (junker in LevelManager.current.currentGameObjects.map { o: IGameObject -> o as? Junker }.filter { j: Junker? -> j != null }) {
                     if (junker!!.collidesWithCircle(cx, cy, explosionRadius)
-                            && (junker !is ShieldJunker || !junker.protectsFrom(cx, cy)))
+                            && (junker !is ShieldJunker || !junker.protectsFrom(cx, cy))) {
                         junker.kill()
+                        causedDamage = true
+                    }
                 }
             }
         }
