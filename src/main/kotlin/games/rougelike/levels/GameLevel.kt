@@ -112,11 +112,12 @@ class GameLevel : ILevel() {
     }
 
     override fun start(stage: Stage?) {
-        loop.play()
         stage!!.scene = this.scene
         stage.width = WIDTH
         stage.height = HEIGHT + HUD.HEIGHT
+        this.render()
         stage.show()
+        loop.play()
     }
 
     override fun stop() {

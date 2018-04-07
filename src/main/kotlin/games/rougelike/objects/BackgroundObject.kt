@@ -17,8 +17,10 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
     var equipmentSpawn: Equipment.EquipmentType? = null
 
+    var orientations = mutableListOf<Orientation>()
 
-    enum class BackgroundType(var id: Int, var traversable: Boolean, var fill: Color) {
+
+    enum class BackgroundType(val id: Int, val traversable: Boolean, val fill: Color, val fill2: Color = Color.TRANSPARENT) {
         DEFAULT(-1, true, Color.PINK),
         GAP(0, false, Color.WHITE),
         FLOOR(1, true, Color.GREEN),
@@ -26,9 +28,8 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         STAIR_DOWN(4, true, Color.AZURE),
         STAIR_UP(5, true, Color.AZURE),
         DOOR(6, true, Color.AZURE),
-        BANISTER_XY(10, false, Color.DARKSLATEGRAY),
-        BANISTER_X(11, false, Color.DARKSLATEGRAY),
-        BANISTER_Y(12, false, Color.DARKSLATEGRAY)
+        BANISTER(10, false, Color.TAN, Color.SADDLEBROWN.darker()),
+        DESK(13, false, Color.LIGHTSLATEGRAY, Color.DIMGRAY)
         ;
     }
 
@@ -55,9 +56,16 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                         it.isPlayerSpawn = true
                     }
                     3 -> {
-                        when (split[1].toInt()){
+                        when (split[1].toInt()) {
                             0 -> it.equipmentSpawn = Equipment.EquipmentType.HACK
                             1 -> it.equipmentSpawn = Equipment.EquipmentType.GRENADE
+                        }
+                    }
+                    4 -> {
+                        for (i in split.slice(1 until split.size)) {
+                            val o = Orientation.values().find { o -> o.id == i.toInt() }
+                            if (o != null)
+                                it.orientations.add(o)
                         }
                     }
                 }
@@ -65,6 +73,10 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
             return it
         }
+    }
+
+    enum class Orientation(val id: Int) {
+        NORTH(0), EAST(1), SOUTH(2), WEST(3), NORTH_EAST(4), SOUTH_EAST(5), SOUTH_WEST(6), NORTH_WEST(7);
     }
 
     fun render(gc: GraphicsContext, x: Double, y: Double) {
@@ -81,6 +93,29 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
         gc.fillRect(x, y, Grid.cellSize, Grid.cellSize)
         gc.strokeRect(x, y, Grid.cellSize, Grid.cellSize)
+
+
+        // second layer
+        gc.fill = this.type.fill2
+        when (this.type) {
+            BackgroundType.BANISTER -> {
+                if (orientations.size > 0)
+                    gc.fillRect(x + Grid.cellSize / 4, y + Grid.cellSize / 4, Grid.cellSize / 2, Grid.cellSize / 2)
+                for (o in orientations) {
+                    when (o) {
+                        Orientation.NORTH -> gc.fillRect(x + Grid.cellSize / 4, y, Grid.cellSize / 2, Grid.cellSize / 2)
+                        Orientation.EAST -> gc.fillRect(x + Grid.cellSize / 2, y + Grid.cellSize / 4, Grid.cellSize / 2, Grid.cellSize / 2)
+                        Orientation.SOUTH -> gc.fillRect(x + Grid.cellSize / 4, y + Grid.cellSize / 2, Grid.cellSize / 2, Grid.cellSize / 2)
+                        Orientation.WEST -> gc.fillRect(x, y + Grid.cellSize / 4, Grid.cellSize / 2, Grid.cellSize / 2)
+                        else -> {
+                        }
+                    }
+                }
+            }
+            else -> {
+            }
+        }
+
     }
 
 }
