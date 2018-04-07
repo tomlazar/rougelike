@@ -23,6 +23,10 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
             LevelManager.current.addLater(junker)
             junker.addEvents(target)
         })
+
+        InputManager.addListener(target, InputBinding.PAUSE_GAMEPLAY, InputEventType.CLICKED, {
+            LevelManager.current.toggleSuspended()
+        })
     }
 
     override fun render() {

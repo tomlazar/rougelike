@@ -19,7 +19,8 @@ enum class InputBinding(val input: Input<*, *>) {
     ZOOM_IN(KeyInput(KeyCode.Q)),
     ZOOM_OUT(KeyInput(KeyCode.E)),
 
-    SPAWN_JUNKER(KeyInput(KeyCode.J));
+    SPAWN_JUNKER(KeyInput(KeyCode.J)),
+    PAUSE_GAMEPLAY(KeyInput(KeyCode.P));
 }
 
 enum class InputEventType {

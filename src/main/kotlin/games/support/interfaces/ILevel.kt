@@ -69,4 +69,8 @@ abstract class ILevel {
     fun resume() {
         isSuspended = false
     }
+
+    fun toggleSuspended() {
+        isSuspended = !isSuspended
+    }
 }
