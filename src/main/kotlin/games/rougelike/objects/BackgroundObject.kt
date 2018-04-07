@@ -12,13 +12,11 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
     var isPlayerSpawn = false
 
-    var isJunkerSpawn = false
-    var isShieldJunkerSpawn = false
+    var junkerSpawnType : JunkerType? = null
 
     var equipmentSpawn: Equipment.EquipmentType? = null
 
     var orientations = mutableListOf<Orientation>()
-
 
     enum class BackgroundType(val id: Int, val traversable: Boolean, val fill: Color, val fill2: Color = Color.TRANSPARENT) {
         DEFAULT(-1, true, Color.PINK),
@@ -31,52 +29,60 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         BANISTER(10, false, Color.TAN, Color.SADDLEBROWN.darker()),
         DESK(13, false, Color.LIGHTSLATEGRAY, Color.DIMGRAY)
         ;
+
+        companion object { fun fromId(id: Int) = BackgroundType.values().find { t: BackgroundType -> t.id == id } }
+    }
+
+    enum class BackgroundOption(val id: Int) {
+        TELEPORTER(0),
+        JUNKER_SPAWN(1),
+        PLAYER_SPAWN(2),
+        EQUIPMENT_SPAWN(3),
+        ORIENTATION(4);
+
+        companion object { fun fromId(id: Int) = BackgroundOption.values().find { t: BackgroundOption -> t.id == id } }
+    }
+    enum class JunkerType(val id: Int) {
+        NORMAL(0), SHIELD(1);
+        companion object { fun fromId(id: Int) = JunkerType.values().find { t: JunkerType -> t.id == id } }
+    }
+    enum class Orientation(val id: Int) {
+        NORTH(0), EAST(1), SOUTH(2), WEST(3), NORTH_EAST(4), SOUTH_EAST(5), SOUTH_WEST(6), NORTH_WEST(7);
+        companion object { fun fromId(id: Int) = Orientation.values().find { t: Orientation -> t.id == id } }
     }
 
     companion object {
         fun fromCode(code: String): BackgroundObject {
             val split = code.split(';')
-            val id = split[0].toInt()
-            val type_ = BackgroundType.values().find { t: BackgroundType -> t.id == split[0].toInt() }
-            val type = if (type_ != null) type_ else BackgroundType.DEFAULT
+            val type = BackgroundType.fromId(split[0].toInt()) ?: BackgroundType.DEFAULT
             val it = BackgroundObject(type)
 
             split.slice(1 until split.size).forEach { property ->
                 val split = property.split('_')
-                when (split[0].toInt()) {
-                    0 -> { // teleporter tile
+                when (BackgroundOption.fromId(split[0].toInt())) {
+                    BackgroundOption.TELEPORTER -> { // teleporter tile
                         it.teleporter = TeleportLocation(split[1], split[2].toDouble(), split[3].toDouble())
                     }
-                    1 -> {
-                        it.isJunkerSpawn = true
-                        if (split[1].toInt() == 1)
-                            it.isShieldJunkerSpawn = true
+                    BackgroundOption.JUNKER_SPAWN -> {
+                        it.junkerSpawnType = JunkerType.fromId(split[1].toInt())
                     }
-                    2 -> {
+                    BackgroundOption.PLAYER_SPAWN -> {
                         it.isPlayerSpawn = true
                     }
-                    3 -> {
-                        when (split[1].toInt()) {
-                            0 -> it.equipmentSpawn = Equipment.EquipmentType.HACK
-                            1 -> it.equipmentSpawn = Equipment.EquipmentType.GRENADE
-                        }
+                    BackgroundOption.EQUIPMENT_SPAWN -> {
+                        it.equipmentSpawn = Equipment.EquipmentType.fromId(split[1].toInt())
                     }
-                    4 -> {
-                        for (i in split.slice(1 until split.size)) {
-                            val o = Orientation.values().find { o -> o.id == i.toInt() }
-                            if (o != null)
-                                it.orientations.add(o)
-                        }
+                    BackgroundOption.ORIENTATION -> {
+                        it.orientations.addAll(
+                                split.slice(1 until split.size)
+                                        .map({ x -> Orientation.fromId(x.toInt())!! })
+                        )
                     }
                 }
             }
 
             return it
         }
-    }
-
-    enum class Orientation(val id: Int) {
-        NORTH(0), EAST(1), SOUTH(2), WEST(3), NORTH_EAST(4), SOUTH_EAST(5), SOUTH_WEST(6), NORTH_WEST(7);
     }
 
     fun render(gc: GraphicsContext, x: Double, y: Double) {

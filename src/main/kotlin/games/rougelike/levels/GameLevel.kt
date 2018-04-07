@@ -77,16 +77,19 @@ class GameLevel : ILevel() {
                     player.gridx = gridx.toDouble()
                     player.gridy = gridy.toDouble()
                 }
-                if (gridcell.isJunkerSpawn) {
+                if (gridcell.junkerSpawnType != null) {
                     val speed = Grid.cellSize * (Random().nextDouble() + 3.0)
                     val junker =
-                            if (gridcell.isShieldJunkerSpawn)
-                                ShieldJunker(gameCanvas.graphicsContext2D,
-                                        gridx.toDouble(), gridy.toDouble(),
-                                        player, speed / 3)
-                            else Junker(gameCanvas.graphicsContext2D,
-                                    gridx.toDouble(), gridy.toDouble(),
-                                    player, speed)
+                            when (gridcell.junkerSpawnType!!) {
+                                BackgroundObject.JunkerType.SHIELD ->
+                                    ShieldJunker(gameCanvas.graphicsContext2D,
+                                            gridx.toDouble(), gridy.toDouble(),
+                                            player, speed / 3)
+                                BackgroundObject.JunkerType.NORMAL ->
+                                    Junker(gameCanvas.graphicsContext2D,
+                                            gridx.toDouble(), gridy.toDouble(),
+                                            player, speed)
+                            }
 
                     gameObjects.add(junker)
                     junker.addEvents(gameScene.scene)

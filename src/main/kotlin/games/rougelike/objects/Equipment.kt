@@ -20,8 +20,9 @@ class Equipment(gc: GraphicsContext, gridx: Int, gridy: Int, val type: Equipment
         }
     }
 
-    enum class EquipmentType(val description: String) {
-        HACK("Hack (Mouse1 + Space)"), GRENADE("EMP Emitter (Mouse2)")
+    enum class EquipmentType(val id: Int, val description: String) {
+        HACK(0, "Hack (Mouse1 + Space)"), GRENADE(1, "EMP Emitter (Mouse2)");
+        companion object { fun fromId(id: Int) = EquipmentType.values().find { t: EquipmentType -> t.id == id } }
     }
 
     override fun render() {
