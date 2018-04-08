@@ -2,7 +2,7 @@ package games.rougelike.objects
 
 import games.support.*
 import games.support.interfaces.ILevel.*
-import games.support.interfaces.ILevel.PromptType.*
+import games.support.DialogBuilder.PromptType.*
 
 class Events {
 

@@ -1,13 +1,13 @@
 package games.rougelike.objects
 
 import games.rougelike.FPS
-import games.rougelike.levels.GameLevel
+import games.rougelike.objects.enemies.Junker
+import games.rougelike.objects.enemies.ShieldJunker
 import games.support.*
 import games.support.interfaces.IController
 import games.support.interfaces.IGameObject
 import javafx.scene.Scene
 import javafx.scene.canvas.GraphicsContext
-import javafx.scene.input.KeyEvent
 import javafx.scene.paint.Color
 import java.lang.Math.pow
 import kotlin.math.*

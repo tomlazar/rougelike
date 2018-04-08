@@ -1,7 +1,8 @@
 package games.rougelike.objects
 
 import games.rougelike.FPS
-import games.rougelike.levels.GameLevel
+import games.rougelike.objects.enemies.Junker
+import games.rougelike.objects.enemies.ShieldJunker
 import games.support.Grid
 import games.support.LevelManager
 import games.support.interfaces.IGameObject

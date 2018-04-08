@@ -2,6 +2,8 @@ package games.rougelike.levels
 
 import games.rougelike.FPS
 import games.rougelike.objects.*
+import games.rougelike.objects.enemies.Junker
+import games.rougelike.objects.enemies.ShieldJunker
 import games.support.*
 import games.support.interfaces.IController
 import games.support.interfaces.IGameObject
@@ -14,7 +16,6 @@ import javafx.scene.Group
 import javafx.scene.Scene
 import javafx.scene.SubScene
 import javafx.scene.canvas.Canvas
-import javafx.scene.layout.Background
 import javafx.scene.layout.VBox
 import javafx.stage.Stage
 import javafx.util.Duration
