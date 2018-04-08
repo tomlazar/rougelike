@@ -28,6 +28,14 @@ enum class InputEventType {
     PRESSED, RELEASED, CLICKED
 }
 
+/**
+ * TO SLATTERY FROM TOM
+ *
+ * I AM SO SORRY FOR THIS MONSTROSITY OF A CLASS.
+ * :(
+ * CHARLIE DID IT
+ */
+
 abstract class Input<Code : Enum<Code>, Ev : InputEvent>(private val containedObj: Code) {
     override fun equals(other: Any?) = (other is Input<*, *>) && (other).containedObj == containedObj
     override fun hashCode() = containedObj.hashCode()
@@ -63,12 +71,12 @@ class MouseInput(val button: MouseButton) : Input<MouseButton, MouseEvent>(butto
 
     override fun toString(): String {
         return "Mouse${
-            when (button) {
-                MouseButton.PRIMARY -> 1
-                MouseButton.SECONDARY -> 2
-                MouseButton.MIDDLE -> 3
-                else -> button.ordinal
-            }
+        when (button) {
+            MouseButton.PRIMARY -> 1
+            MouseButton.SECONDARY -> 2
+            MouseButton.MIDDLE -> 3
+            else -> button.ordinal
+        }
         }"
     }
 }
@@ -122,16 +130,27 @@ class InputManager : IController {
             return sceneY + LevelManager.current.camera.sceneCamera.translateY - HUD.HEIGHT
         }
 
-        private fun <Ev : InputEvent> addListener(target: Scene, input: Input<*, Ev>, inputType: InputEventType, action: () -> Unit) {
+        private fun <Ev : InputEvent> addListener(target: Scene,
+                                                  input: Input<*, Ev>,
+                                                  inputType: InputEventType,
+                                                  action: () -> Unit) {
             target.addEventHandler(input.convertEventType(inputType), { event: Ev? ->
                 if (!LevelManager.current.isSuspended && input.matchesEvent(event!!))
                     action.invoke()
             })
         }
 
-        fun addListener(target: Scene, input: InputBinding, inputType: InputEventType, action: () -> Unit) =
+        fun addListener(target: Scene,
+                        input: InputBinding,
+                        inputType: InputEventType,
+                        action: () -> Unit) =
                 input.input.forEach { input -> addListener(target, input, inputType, action) }
     }
 
-    fun inputNegPos(neg: InputBinding, pos: InputBinding) = (if (isInputActive(neg)) -1.0 else 0.0) + (if (isInputActive(pos)) 1.0 else 0.0)
+    fun clear() =
+            inputActive.keys.forEach { key -> inputActive[key] = false }
+
+
+    fun inputNegPos(neg: InputBinding, pos: InputBinding) =
+            (if (isInputActive(neg)) -1.0 else 0.0) + (if (isInputActive(pos)) 1.0 else 0.0)
 }

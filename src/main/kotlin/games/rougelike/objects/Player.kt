@@ -2,14 +2,13 @@ package games.rougelike.objects
 
 import games.rougelike.FPS
 import games.rougelike.levels.GameLevel
+import games.rougelike.objects.enemies.Junker
 import games.support.Grid
 import games.support.interfaces.IGameObject
 import games.support.*
 import games.support.interfaces.IController
 import javafx.scene.Scene
 import javafx.scene.canvas.GraphicsContext
-import javafx.scene.input.KeyEvent
-import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import java.lang.Math.pow
 import kotlin.math.atan2
@@ -18,7 +17,7 @@ import kotlin.math.sqrt
 
 class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     val radius = 15.0
-    val speed = Grid.cellSize * 4
+    var speed = Grid.cellSize * 4
 
     override var height: Double = radius * 2
     override var width: Double = radius * 2

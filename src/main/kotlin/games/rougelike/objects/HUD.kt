@@ -1,13 +1,11 @@
 package games.rougelike.objects
 
-import com.sun.org.apache.xpath.internal.WhitespaceStrippingElementMatcher
 import games.rougelike.levels.GameLevel
 import games.support.LevelManager
 import games.support.interfaces.IGameObject
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
 import javafx.scene.text.Text
-import kotlin.math.roundToInt
 
 class HUD(gc: GraphicsContext) : IGameObject(gc) {
     override var width = 0.0

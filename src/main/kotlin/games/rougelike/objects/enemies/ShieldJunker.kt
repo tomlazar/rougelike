@@ -1,4 +1,4 @@
-package games.rougelike.objects
+package games.rougelike.objects.enemies
 
 import games.rougelike.FPS
 import games.support.Grid
@@ -8,7 +8,6 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.ArcType
 import kotlin.math.abs
 import kotlin.math.atan2
-import kotlin.math.min
 import kotlin.math.sqrt
 
 class ShieldJunker(gc: GraphicsContext, gridX: Double, gridY: Double, var target: IGameObject? = null, speed: Double = Grid.cellSize * 1.5) : Junker(gc, gridX, gridY, target, speed) {

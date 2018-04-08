@@ -3,10 +3,13 @@ package games.support.interfaces
 import games.rougelike.objects.Effects
 import games.rougelike.objects.HUD
 import games.rougelike.objects.Player
+import games.support.DialogBuilder
 import games.support.Grid
+import games.support.LevelManager
 import games.support.TrackingCamera
 import javafx.animation.Timeline
 import javafx.scene.Scene
+import javafx.scene.control.Alert
 import javafx.stage.Stage
 
 abstract class ILevel {
@@ -58,15 +61,16 @@ abstract class ILevel {
         addLaterQueue.clear()
 
         removeLaterQueue.forEach { o: IGameObject -> gameObjects.remove(o) }
-
-        // TODO: Add the "auxillary updates" for the dialog system here
     }
 
     fun suspend() {
+        LevelManager.inputManager.clear()
+        loop.pause()
         isSuspended = true
     }
 
     fun resume() {
+        loop.play()
         isSuspended = false
     }
 
@@ -74,25 +78,36 @@ abstract class ILevel {
         isSuspended = !isSuspended
     }
 
-    enum class PromptType {
-        MESSAGE, NARRATION, THINKING, DIALOGUE, TERMINAL;
-    }
-
-    class Prompt(val type: PromptType, val text: String)
+    data class Prompt(val type: DialogBuilder.PromptType, val text: String)
 
     fun showPrompts(vararg prompts: Prompt, callback: (() -> Unit)? = null) {
         suspend()
+        var active = prompts.count()
+        for (prompt in prompts) {
+            val notification = Alert(Alert.AlertType.INFORMATION)
+            notification.headerText = null
 
-        Thread({
-            // TODO: display prompts, and wait for them to be done
-            for (prompt in prompts) {
-                println("${prompt.type.name.toLowerCase().capitalize()}: ${prompt.text}")
-                //Thread.sleep(1000)
+//                when(prompt.type) {
+////                    MESSAGE -> TODO()
+////                    NARRATION ->
+////                    THINKING ->
+////                    DIALOGUE ->
+////                    TERMINAL ->
+////                }
+
+            notification.contentText = prompt.text
+            notification.dialogPane.children.addAll(DialogBuilder.build())
+
+            notification.show()
+            notification.setOnCloseRequest {
+                active--
+
+                if (active > 0)
+                    return@setOnCloseRequest
+
+                callback?.invoke()
+                resume()
             }
-            Thread.sleep(1000)
-
-            callback?.invoke()
-            resume()
-        }).start()
+        }
     }
 }

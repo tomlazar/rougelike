@@ -1,18 +1,19 @@
-package games.rougelike.objects
+package games.rougelike.objects.enemies
 
 import games.rougelike.FPS
-import games.rougelike.levels.GameLevel
+import games.rougelike.objects.BackgroundObject
+import games.rougelike.objects.Effects
+import games.rougelike.objects.Equipment
+import games.rougelike.objects.Player
 import games.support.*
 import games.support.interfaces.IController
 import games.support.interfaces.IGameObject
 import javafx.scene.Scene
 import javafx.scene.canvas.GraphicsContext
-import javafx.scene.input.MouseEvent
 import javafx.scene.paint.Color
 import javafx.scene.shape.ArcType
 import javafx.scene.text.Text
 import javafx.scene.text.TextAlignment
-import java.lang.Math.pow
 import java.util.*
 import kotlin.math.*
 
