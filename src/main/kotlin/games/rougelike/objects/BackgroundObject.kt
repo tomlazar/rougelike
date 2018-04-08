@@ -6,6 +6,8 @@ import javafx.scene.paint.Color
 
 class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
+    var traversable: Boolean = type.traversable
+
     var teleporter: TeleportLocation? = null
 
     class TeleportLocation(val level: String, val gridx: Double, val gridy: Double)
@@ -21,6 +23,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
     var push: PushLocation? = null
 
     var eventTriggers = mutableListOf<Events.GameEvent>()
+    var eventResets = mutableListOf<Events.GameEvent>()
 
     class PushLocation(val gridx: Double, val gridy: Double)
 
@@ -31,7 +34,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         WALL(2, false, Color.BLACK),
         STAIR_DOWN(4, true, Color.AZURE),
         STAIR_UP(5, true, Color.AZURE),
-        DOOR(6, true, GAP.fill, Color.AQUA),
+        DOOR(6, true, FLOOR.fill, Color.AQUA),
         BANISTER(10, false, Color.TAN, Color.SADDLEBROWN.darker()),
         WINDOW(11, false, FLOOR.fill, Color.SILVER),
         WALL_WINDOW(12, false, FLOOR.fill, Color.SILVER),
@@ -51,6 +54,8 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         ORIENTATION(4),
         PUSHABLE(5),
         EVENT_TRIGGER(6),
+        EVENT_RESET(7),
+        TRAVERSABLE(8),
         ;
 
         companion object {
@@ -107,6 +112,12 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                     BackgroundOption.EVENT_TRIGGER -> {
                         it.eventTriggers.add(Events.GameEvent.fromId(split[1].toInt())!!)
                     }
+                    BackgroundOption.EVENT_RESET -> {
+                        it.eventResets.add(Events.GameEvent.fromId(split[1].toInt())!!)
+                    }
+                    BackgroundOption.TRAVERSABLE -> {
+                        it.traversable = split[1].toInt() != 0
+                    }
                 }
             }
 
@@ -127,7 +138,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         //    gc.fill = Color.AQUA
 
         gc.fillRect(x, y, Grid.cellSize, Grid.cellSize)
-        if (this.type.traversable)
+        if (this.traversable)
             gc.strokeRect(x, y, Grid.cellSize, Grid.cellSize)
 
 
@@ -179,10 +190,10 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                     val doorwidth = Grid.cellSize / 6
                     for (o in orientations) {
                         when (o) {
-                            Orientation.NORTH -> gc.fillRect(x, y, Grid.cellSize, doorwidth)
-                            Orientation.EAST -> gc.fillRect(x + Grid.cellSize - doorwidth, y, doorwidth, Grid.cellSize)
-                            Orientation.SOUTH -> gc.fillRect(x, y + Grid.cellSize - doorwidth, Grid.cellSize, doorwidth)
-                            Orientation.WEST -> gc.fillRect(x, y, doorwidth, Grid.cellSize)
+                            Orientation.SOUTH -> gc.fillRect(x, y, Grid.cellSize, doorwidth)
+                            Orientation.WEST -> gc.fillRect(x + Grid.cellSize - doorwidth, y, doorwidth, Grid.cellSize)
+                            Orientation.NORTH -> gc.fillRect(x, y + Grid.cellSize - doorwidth, Grid.cellSize, doorwidth)
+                            Orientation.EAST -> gc.fillRect(x, y, doorwidth, Grid.cellSize)
                         }
                     }
                 }

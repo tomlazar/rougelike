@@ -86,7 +86,7 @@ abstract class IGameObject(val gc: GraphicsContext) {
     }
 
     fun moveOnGrid(newx: Double, newy: Double, grid: Array<Array<BackgroundObject>> = LevelManager.current.grid.map, slide: Boolean = true): Boolean {
-        val newPositionTraversable = intersectingGridSquares(grid, newx, newy).all { o: BackgroundObject -> o.type.traversable }
+        val newPositionTraversable = intersectingGridSquares(grid, newx, newy).all { o: BackgroundObject -> o.traversable }
 
         return when {
             newPositionTraversable -> {

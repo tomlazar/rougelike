@@ -25,7 +25,9 @@ class Equipment(gc: GraphicsContext, gridx: Int, gridy: Int, val type: Equipment
     enum class EquipmentType(val id: Int, val description: String) {
         PUSH(-1, "Push (${InputBinding.PUSH.input.first()})"),
         HACK(0, "Hack (${InputBinding.SET_TARGET.input.first()} + ${InputBinding.HACK.input.first()})"),
-        GRENADE(1, "EMP Emitter (${InputBinding.GRENADE.input.first()})");
+        GRENADE(1, "EMP Emitter (${InputBinding.GRENADE.input.first()})"),
+        CROWBAR(2, "Crowbar"),
+        ;
         companion object { fun fromId(id: Int) = EquipmentType.values().find { t: EquipmentType -> t.id == id } }
     }
 

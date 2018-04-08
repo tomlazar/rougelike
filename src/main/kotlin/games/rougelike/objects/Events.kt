@@ -85,6 +85,48 @@ class Events {
                             "going to check it out.")
             )
         }),
+        PLAN_5_STAIRS_BLOCKED(10500, {
+            games.support.LevelManager.current.showPrompts(
+                    Prompt(THINKING, "Dang, there's no way I'm getting past this pileup of junkers."),
+                    Prompt(DIALOGUE, "Dennis: Mike? It's me. I need another way down to the lower level. Any ideas?"),
+                    Prompt(DIALOGUE, "Slattery: You could try the elevator."),
+                    Prompt(DIALOGUE, "Dennis: I actually called the elevator earlier. The doors wouldn't open all of the way. " +
+                            "Whoever's behind this really wants us to use the stairs for some reason."),
+                    Prompt(DIALOGUE, "Slattery: Oh? Well I have a way you could try to get it open. Steve found some old computers " +
+                            "sitting around to put into the 101 lab, but they were rusted shut somehow. Liam was heading down to the lab " +
+                            "with a crowbar after Games class."),
+                    Prompt(DIALOGUE, "Dennis: Sounds good. I'll go see if I can borrow it.")
+            )
+        }),
+        PLAN_6_ENTER_101(10600, {
+            games.support.LevelManager.current.showPrompts(
+                    Prompt(DIALOGUE, "Sam: Hey, Dr. Brylow."),
+                    Prompt(DIALOGUE, "Dennis: Hi, Sam.")
+            )
+        }),
+        PLAN_6_CROWBAR(10601, {
+            games.support.LevelManager.current.showPrompts(
+                    Prompt(DIALOGUE, "Liam: Dr. B! How's it going?"),
+                    Prompt(DIALOGUE, "Dennis: Good... Were these robots not bothering you?"),
+                    Prompt(DIALOGUE, "Liam: Nope! I saw them chasing Dr. Factor earlier today, but they've been ignoring me and the " +
+                            "other students. I've been working on these machines and they were just chilling out over there."),
+                    Prompt(DIALOGUE, "Dennis: Huh."),
+                    Prompt(DIALOGUE, "Dennis: Well, are you done with that crowbar? I wanted to see if I could get the elevator open."),
+                    Prompt(DIALOGUE, "Liam: Yeah, it's all yours. These machines honestly feel like they're welded shut; I don't " +
+                            "think anyone's gonna be able to get them open."),
+                    Prompt(MESSAGE, "Picked up \"Crowbar\".")
+            )
+        }),
+        DOOR_LOCKED(201, {
+            LevelManager.current.showPrompts(
+                    Prompt(NARRATION, "The door is locked tight.")
+            )
+        }),
+        ELEVATOR_JAMMED(202, {
+            games.support.LevelManager.current.showPrompts(
+                    Prompt(NARRATION, "The elevator arrives, but the doors jam with a loud \"BANG!\" after opening only about two inches.")
+            )
+        })
         ;
 
         fun trigger() {
@@ -92,6 +134,10 @@ class Events {
                 this.action()
                 Events.triggeredEvents[this] = true
             }
+        }
+
+        fun reset() {
+            triggeredEvents[this] = false
         }
 
         companion object {
