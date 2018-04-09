@@ -80,9 +80,7 @@ abstract class ILevel {
             suspend()
     }
 
-    data class Prompt(val type: DialogBuilder.PromptType, val text: String)
-
-    fun showPrompts(vararg prompts: () -> Prompt, callback: (() -> Any)? = null) {
+    fun showPrompts(vararg prompts: () -> DialogBuilder.Prompt, callback: (() -> Any)? = null) {
         if (prompts.isEmpty())
             return
 
@@ -93,27 +91,12 @@ abstract class ILevel {
         })
     }
 
-    private fun showPromptsStartingWith(i: Int, prompts: Array<out () -> Prompt>, callback: (() -> Any)) {
+    private fun showPromptsStartingWith(i: Int, prompts: Array<out () -> DialogBuilder.Prompt>, callback: (() -> Any)) {
         if (i >= prompts.size) {
             callback.invoke()
         } else {
             val prompt = prompts[i].invoke()
-
-            val notification = Alert(Alert.AlertType.INFORMATION)
-            notification.title = prompt.type.name.toLowerCase().capitalize()
-            notification.headerText = when (prompt.type) {
-                DialogBuilder.PromptType.DIALOGUE -> {
-                    prompt.text.substring(0, prompt.text.indexOf(':') + 1)
-                }
-                DialogBuilder.PromptType.THINKING -> "Dennis: (thinking)"
-                else -> ""
-            }
-            notification.contentText = when (prompt.type) {
-                DialogBuilder.PromptType.DIALOGUE -> prompt.text.substring(prompt.text.indexOf(':') + 2)
-                else -> prompt.text
-            }
-            notification.dialogPane.style = ".dialog-pane > .content.label {-fx-font-style: italic;}"
-            //notification.dialogPane.children.addAll(DialogBuilder.build())
+            val notification = prompt.build()
 
             notification.setOnCloseRequest {
                 showPromptsStartingWith(i + 1, prompts, callback)
