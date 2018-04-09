@@ -49,10 +49,12 @@ class Events {
         }),
         PLAN_3_ENTER_SYS_LAB(10300, {
             LevelManager.current.showPrompts(
-                    Prompt(THINKING, "Huh. Empty. No matter, looks like Tom left the analyzer at Mawdryn."),
-                    Prompt(NARRATION, "..."),
-                    Prompt(THINKING, "Still, I wonder why nobody is here..."),
-                    Prompt(THINKING, "The OS students better not think that death robots are a good reason for a deadline extension...")
+                    Prompt(DIALOGUE, "Avery: Hi, Dr. Brylow!"),
+                    Prompt(DIALOGUE, "Dennis: Hello Avery. How's the OS assignment going? Must be pretty chaotic with these robots running around."),
+                    Prompt(DIALOGUE, "Avery: You know TA-Bot isn't working? Deathrobots or no deathrobots, it should still run. Can we have an extension? "),
+                    Prompt(DIALOGUE, "Dennis: *deep sigh*"),
+                    Prompt(DIALOGUE, "Dennis: Yes, I suppose so. I'll make a note to have it run twice tomorrow. Let me just grab the system analyzer and I'll be on my way. Good Luck!"),
+                    Prompt(NARRATION, "Dennis did not remember the next day.")
             )
         }),
         PLAN_4_ENTER_WIRED_OFFICE(10400, {
@@ -106,7 +108,7 @@ class Events {
         }),
         PLAN_6_CROWBAR(10601, {
             games.support.LevelManager.current.showPrompts(
-                    Prompt(DIALOGUE, "Liam: Dr. B! How's it going?"),
+                    Prompt(DIALOGUE, "Liam: Dr. B! What's poppin'?"),
                     Prompt(DIALOGUE, "Dennis: Good... Were these robots not bothering you?"),
                     Prompt(DIALOGUE, "Liam: Nope! I saw them chasing Dr. Factor earlier today, but they've been ignoring me and the " +
                             "other students. I've been working on these machines and they were just chilling out over there."),
