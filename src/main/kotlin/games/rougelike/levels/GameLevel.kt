@@ -128,9 +128,9 @@ class GameLevel : ILevel() {
         stage!!.scene = this.scene
         stage.width = WIDTH
         stage.height = HEIGHT + HUD.HEIGHT
-        this.update()
         this.render()
         stage.show()
+        this.update()
         loop.play()
     }
 

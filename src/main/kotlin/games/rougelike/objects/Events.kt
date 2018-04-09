@@ -14,7 +14,30 @@ class Events {
         TEST_PROMPT(-1, {
             LevelManager.current.showPrompts({ Prompt(MESSAGE, "This is a test prompt.") })
         }),
-        PLAN_1B_RAILROAD(10121, {
+        PLAN_1_INTRO(10100, {
+            LevelManager.current.showPrompts(
+                    {
+                        Prompt(NARRATION, "On a normal April day, Dennis Brylow finds himself in his office waiting for his bus-time.")
+                    },
+                    { Prompt(THINKING, "I suppose I can check some emails while I wait.") },
+                    { Prompt(TERMINAL, "$ alpine --check-mail") },
+                    { Prompt(TERMINAL, "> One new message from Slattery, Michael.") },
+                    {
+                        Prompt(TERMINAL, "> Dennis, \n" +
+                                "> Are you still at Cudahy? If so, come quick! There are robot killing-machines rampaging through the halls! \n" +
+                                "> I have one outside my door, I need you to lure it away or something! \n" +
+                                "> \n" +
+                                ">  - mikes")
+                    },
+                    { Prompt(THINKING, "That sounds terrible! I better get to his office, quick!") },
+                    callback = {
+                        HUD.objective = "Get to Dr. Slattery's office"
+                        {}
+                    }
+            )
+        }),
+        PLAN_1B_RAILROAD(10121,
+        {
             if (!Events.triggeredEvents[PLAN_2_ENTER_SLATTERY_OFFICE]!!) {
                 LevelManager.current.showPrompts({
                     Prompt(THINKING, "I can't get distracted - Mike said he really needs my help in his office on the 3rd floor.")
@@ -23,7 +46,8 @@ class Events {
             } else
                 true
         }),
-        PLAN_1B_SEE_TARGETING_BOT(10120, {
+        PLAN_1B_SEE_TARGETING_BOT(10120,
+        {
             LevelManager.current.showPrompts(
                     {
                         Prompt(NARRATION, "Dennis stops in his tracks when he reaches the back hallway. A junkerbot is " +
@@ -40,16 +64,20 @@ class Events {
                     }
             )
         }),
-        PLAN_2_ENTER_SLATTERY_OFFICE(10200, {
+        PLAN_2_ENTER_SLATTERY_OFFICE(10200,
+        {
             games.support.LevelManager.current.showPrompts(
-                    { Prompt(DIALOGUE, "Slattery: Dennis, thank God! That bot has had me locked in here for hours.") },
+                    {
+                        HUD.objective = ""
+                        Prompt(DIALOGUE, "Dr. Slattery: Dennis, thank God! That bot has had me locked in here for hours.")
+                    },
                     { Prompt(DIALOGUE, "Dennis: No problem, Mike. What on earth is going on?") },
                     {
-                        Prompt(DIALOGUE, "Slattery: You know almost as much as I do. These haywire robots roaming the halls, " +
+                        Prompt(DIALOGUE, "Dr. Slattery: You know almost as much as I do. These haywire robots roaming the halls, " +
                                 "all the phones are down, the front doors of Cudahy locked from both sides... It's chaos!")
                     },
                     {
-                        Prompt(DIALOGUE, "Slattery: I was just making some photocopies in the office when these bots started " +
+                        Prompt(DIALOGUE, "Dr. Slattery: I was just making some photocopies in the office when these bots started " +
                                 "coming up the main stairway. I've been scanning the network to see if there are any clues, " +
                                 "and there seems to be a lot of traffic coming out of the Wired Office workstations. I bet this " +
                                 "is one of their awful contraptions gone haywire.")
@@ -59,14 +87,16 @@ class Events {
                                 "check out the wired office.")
                     },
                     {
-                        Prompt(DIALOGUE, "Slattery: Sounds good. Hey, I saw your research students using that system analyzer " +
+                        HUD.objective = "Investigate 2nd floor Wired Office"
+                        Prompt(DIALOGUE, "Dr. Slattery: Sounds good. Hey, I saw your research students using that system analyzer " +
                                 "you gave them to debug XINU earlier today. You should go get that; I bet it will work wonders on" +
                                 "these death machines rampaging through Cudahy.")
                     },
                     { Prompt(DIALOGUE, "Dennis: Good call. See you, Mike.") }
             )
         }),
-        PLAN_3_ENTER_SYS_LAB(10300, {
+        PLAN_3_ENTER_SYS_LAB(10300,
+        {
             LevelManager.current.showPrompts(
                     { Prompt(DIALOGUE, "Avery: Hi, Dr. Brylow!") },
                     { Prompt(DIALOGUE, "Dennis: Hello Avery. How's the OS assignment going? Must be pretty chaotic with these robots running around.") },
@@ -75,7 +105,8 @@ class Events {
                     { Prompt(DIALOGUE, "Dennis: Yes, I suppose so. I'll make a note to have it run twice tomorrow. Let me just grab the system analyzer and I'll be on my way. Good Luck!") }
             )
         }),
-        PLAN_3_PICKUP(10301, {
+        PLAN_3_PICKUP(10301,
+        {
             LevelManager.current.showPrompts(
                     {
                         Equipment.acquiredEquipment[Equipment.EquipmentType.HACK] = true
@@ -84,7 +115,8 @@ class Events {
                     }
             )
         }),
-        PLAN_4_ENTER_WIRED_OFFICE(10400, {
+        PLAN_4_ENTER_WIRED_OFFICE(10400,
+        {
             games.support.LevelManager.current.showPrompts(
                     {
                         Prompt(NARRATION, "As Dennis enters the Wired Office, a former student looks up from working over a pile of scraps " +
@@ -98,6 +130,7 @@ class Events {
                                 "we had to flee from the systems room.")
                     },
                     {
+                        HUD.objective = ""
                         Prompt(DIALOGUE, "Julia: The rest of the team has been working on clearing out the bots. They're in " +
                                 "the storage room right now but we really need to get to the security footage terminal if we want to " +
                                 "know what's going on.")
@@ -107,12 +140,14 @@ class Events {
                                 "guys been dealing with the bots?")
                     },
                     {
+                        HUD.objective = "Get the security data in the Wired Office back room"
                         Prompt(DIALOGUE, "Julia: One of the guys rigged up some localized-EMP emitters. There's a stash of them by the " +
                                 "security terminal - feel free to grab it when you get past all those bots.")
                     }
             )
         }),
-        PLAN_4_RAILROAD(10402, {
+        PLAN_4_RAILROAD(10402,
+        {
             if (!Events.triggeredEvents[PLAN_4_SECURITY_TERMINAL]!!) {
                 LevelManager.current.showPrompts({
                     Prompt(THINKING, "I can't get distracted - I need to find out what I can from the Wired Office on the 2nd floor.")
@@ -121,7 +156,8 @@ class Events {
             } else
                 true
         }),
-        PLAN_4_SECURITY_TERMINAL(10401, {
+        PLAN_4_SECURITY_TERMINAL(10401,
+        {
             games.support.LevelManager.current.showPrompts(
                     { Prompt(THINKING, "Wow, these makeshift grenades look pretty slick, given the circumstances.") },
                     {
@@ -129,39 +165,55 @@ class Events {
                         Prompt(MESSAGE, "\"EMP Grenade\" ability unlocked: press ${InputBinding.GRENADE.input.first()} to throw.")
                     },
                     { Prompt(THINKING, "And these warning messages must be the results of the AI protocols.") },
-                    { Prompt(TERMINAL, "ALL SYSTEMS NOMINAL. NO BREACHES DETECTED. WARNING: SOME MISSING FOOTAGE FROM CU001") },
+                    {
+                        HUD.objective = ""
+                        Prompt(TERMINAL, "ALL SYSTEMS NOMINAL. NO BREACHES DETECTED. WARNING: SOME MISSING FOOTAGE FROM CU001")
+                    },
                     { Prompt(NARRATION, "Dennis pulls out his phone and dials a call.") },
                     {
                         Prompt(DIALOGUE, "Dennis: Mike? It's me. The guys in the Wired Office are just as surprised as we are. " +
                                 "Their security footage system found some suspicious activity in the lower level lecture pit. I'm " +
                                 "going to check it out.")
+                    },
+                    callback = {
+                        HUD.objective = "Investigate suspicious activity in the basement lecture pit"
+                        {}
                     }
             )
         }),
-        PLAN_5_STAIRS_BLOCKED(10500, {
+        PLAN_5_STAIRS_BLOCKED(10500,
+        {
             games.support.LevelManager.current.showPrompts(
                     { Prompt(THINKING, "Dang, there's no way I'm getting past this pileup of junkers.") },
-                    { Prompt(DIALOGUE, "Dennis: Mike? It's me. I need another way down to the lower level. Any ideas?") },
-                    { Prompt(DIALOGUE, "Slattery: You could try the elevator.") },
+                    {
+                        HUD.objective = ""
+                        Prompt(DIALOGUE, "Dennis: Mike? It's me. I need another way down to the lower level. Any ideas?")
+                    },
+                    { Prompt(DIALOGUE, "Dr. Slattery: You could try the elevator.") },
                     {
                         Prompt(DIALOGUE, "Dennis: I actually called the elevator earlier. The doors wouldn't open all of the way. " +
                                 "Whoever's behind this really wants us to use the stairs for some reason.")
                     },
                     {
-                        Prompt(DIALOGUE, "Slattery: Oh? Well I have a way you could try to get it open. Steve found some old computers " +
+                        Prompt(DIALOGUE, "Dr. Slattery: Oh? Well I have a way you could try to get it open. Steve found some old computers " +
                                 "sitting around to put into the 101 lab, but they were rusted shut somehow. Liam was heading down to the lab " +
                                 "with a crowbar after Games class.")
                     },
-                    { Prompt(DIALOGUE, "Dennis: Sounds good. I'll go see if I can borrow it.") }
+                    {
+                        HUD.objective = "Borrow a crowbar from the 101 lab"
+                        Prompt(DIALOGUE, "Dennis: Sounds good. I'll go see if I can borrow it.")
+                    }
             )
         }),
-        PLAN_6_ENTER_101(10600, {
+        PLAN_6_ENTER_101(10600,
+        {
             games.support.LevelManager.current.showPrompts(
                     { Prompt(DIALOGUE, "Sam: Hey, Dr. Brylow.") },
                     { Prompt(DIALOGUE, "Dennis: Hi, Sam.") }
             )
         }),
-        PLAN_6_CROWBAR(10601, {
+        PLAN_6_CROWBAR(10601,
+        {
             games.support.LevelManager.current.showPrompts(
                     { Prompt(DIALOGUE, "Liam: Dr. B! What's poppin'?") },
                     { Prompt(DIALOGUE, "Dennis: Good... Were these robots not bothering you?") },
@@ -176,17 +228,20 @@ class Events {
                                 "think anyone's gonna be able to get them open.")
                     },
                     {
+                        HUD.objective = "Get to the basement lecture pit via the elevator"
                         Equipment.acquiredEquipment[Equipment.EquipmentType.CROWBAR] = true
                         Prompt(MESSAGE, "Picked up \"Crowbar\".")
                     }
             )
         }),
-        DOOR_LOCKED(201, {
+        DOOR_LOCKED(201,
+        {
             LevelManager.current.showPrompts(
                     { Prompt(NARRATION, "The door is locked tight.") }
             )
         }),
-        ELEVATOR_JAMMED(202, {
+        ELEVATOR_JAMMED(202,
+        {
             games.support.LevelManager.current.showPrompts(
                     {
                         if (Equipment.acquiredEquipment[Equipment.EquipmentType.CROWBAR]!!)
@@ -197,11 +252,12 @@ class Events {
             )
             Equipment.acquiredEquipment[Equipment.EquipmentType.CROWBAR]!!
         }),
-        IT_JAB(203, {
+        IT_JAB(203,
+        {
             LevelManager.current.showPrompts(
                     { Prompt(THINKING, "Oh my! That's the IT conference room. Have all of the IT staff been turned into robots?") },
                     { Prompt(THINKING, "...") },
-                    { Prompt(THINKING, "I wonder if they'll actually respond to my emails now.") }
+                    { Prompt(THINKING, "I wonder if that means I'll actually get responses to my emails now.") }
             )
         })
         ;
