@@ -72,8 +72,7 @@ class Events {
                     { Prompt(DIALOGUE, "Dennis: Hello Avery. How's the OS assignment going? Must be pretty chaotic with these robots running around.") },
                     { Prompt(DIALOGUE, "Avery: You know TA-Bot isn't working? Deathrobots or no deathrobots, it should still run. Can we have an extension? ") },
                     { Prompt(DIALOGUE, "Dennis: *deep sigh*") },
-                    { Prompt(DIALOGUE, "Dennis: Yes, I suppose so. I'll make a note to have it run twice tomorrow. Let me just grab the system analyzer and I'll be on my way. Good Luck!") },
-                    { Prompt(NARRATION, "Dennis did not remember the next day.") }
+                    { Prompt(DIALOGUE, "Dennis: Yes, I suppose so. I'll make a note to have it run twice tomorrow. Let me just grab the system analyzer and I'll be on my way. Good Luck!") }
             )
         }),
         PLAN_3_PICKUP(10301, {
@@ -88,18 +87,18 @@ class Events {
         PLAN_4_ENTER_WIRED_OFFICE(10400, {
             games.support.LevelManager.current.showPrompts(
                     {
-                        Prompt(NARRATION, "As Dennis enters the Wired Office, a student looks up from working over a pile of scraps " +
+                        Prompt(NARRATION, "As Dennis enters the Wired Office, a former student looks up from working over a pile of scraps " +
                                 "which looks like it used to be a junkerbot.")
                     },
-                    { Prompt(DIALOGUE, "Tim: Dr. Brylow! It's good to see you! Are you investigating the robot frenzy?") },
+                    { Prompt(DIALOGUE, "Julia: Dr. Brylow! It's good to see you! Are you investigating the robot frenzy?") },
                     { Prompt(DIALOGUE, "Dennis: You bet. What have you guys been up to down here?") },
                     {
-                        Prompt(DIALOGUE, "Tim: IT asked us to look into it, so we started running our new AI systems over the " +
+                        Prompt(DIALOGUE, "Julia: IT asked us to look into it, so we started running our new AI systems over the " +
                                 "security footage. About ten minutes ago a whole horde of bots came in through our side door and " +
-                                "we had to flee the systems room.")
+                                "we had to flee from the systems room.")
                     },
                     {
-                        Prompt(DIALOGUE, "Tim: The rest of the team has been working on clearing out the bots. They're in " +
+                        Prompt(DIALOGUE, "Julia: The rest of the team has been working on clearing out the bots. They're in " +
                                 "the storage room right now but we really need to get to the security footage terminal if we want to " +
                                 "know what's going on.")
                     },
@@ -108,8 +107,8 @@ class Events {
                                 "guys been dealing with the bots?")
                     },
                     {
-                        Prompt(DIALOGUE, "Tim: One of the guys rigged up some localized-EMP emitters. There's a stash of them by the " +
-                                "security terminal - feel free to grab it when you can get past all those bots.")
+                        Prompt(DIALOGUE, "Julia: One of the guys rigged up some localized-EMP emitters. There's a stash of them by the " +
+                                "security terminal - feel free to grab it when you get past all those bots.")
                     }
             )
         }),
@@ -197,6 +196,13 @@ class Events {
                     }
             )
             Equipment.acquiredEquipment[Equipment.EquipmentType.CROWBAR]!!
+        }),
+        IT_JAB(203, {
+            LevelManager.current.showPrompts(
+                    { Prompt(THINKING, "Oh my! That's the IT conference room. Have all of the IT staff been turned into robots?") },
+                    { Prompt(THINKING, "...") },
+                    { Prompt(THINKING, "I wonder if they'll actually respond to my emails now.") }
+            )
         })
         ;
 

@@ -61,6 +61,9 @@ class Player(gc: GraphicsContext) : Person(gc, "Dennis"), IController {
             immune -= 1
         }
 
+        moving = listOf(InputBinding.LEFT, InputBinding.RIGHT, InputBinding.DOWN, InputBinding.UP)
+                .any { b -> LevelManager.inputManager.isInputActive(b) }
+
         val dx = speed / FPS * LevelManager.inputManager.inputNegPos(InputBinding.LEFT, InputBinding.RIGHT)
         val dy = speed / FPS * LevelManager.inputManager.inputNegPos(InputBinding.UP, InputBinding.DOWN)
 

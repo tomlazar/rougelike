@@ -47,7 +47,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         BANISTER(10, false, Color.TAN, Color.SADDLEBROWN.darker()),
         WINDOW(11, false, FLOOR.fill, Color.SILVER),
         WALL_WINDOW(12, false, FLOOR.fill, Color.SILVER),
-        DESK(13, false, Color.LIGHTSLATEGRAY, Color.DIMGRAY)
+        DESK(13, false, Color.LIGHTSLATEGRAY.brighter(), Color.DIMGRAY)
         ;
 
         companion object {
