@@ -81,33 +81,47 @@ abstract class ILevel {
     data class Prompt(val type: DialogBuilder.PromptType, val text: String)
 
     fun showPrompts(vararg prompts: Prompt, callback: (() -> Unit)? = null) {
+        if (prompts.isEmpty())
+            return
+
         suspend()
-        var active = prompts.count()
+        var firstAlert : Alert? = null
+        var prevAlert : Alert? = null
         for (prompt in prompts) {
             val notification = Alert(Alert.AlertType.INFORMATION)
-            notification.headerText = null
-
-//                when(prompt.type) {
-////                    MESSAGE -> TODO()
-////                    NARRATION ->
-////                    THINKING ->
-////                    DIALOGUE ->
-////                    TERMINAL ->
-////                }
-
-            notification.contentText = prompt.text
-            notification.dialogPane.children.addAll(DialogBuilder.build())
-
-            notification.show()
-            notification.setOnCloseRequest {
-                active--
-
-                if (active > 0)
-                    return@setOnCloseRequest
-
-                callback?.invoke()
-                resume()
+            notification.title = prompt.type.name.toLowerCase().capitalize()
+            notification.headerText = when(prompt.type) {
+                DialogBuilder.PromptType.DIALOGUE -> {
+                     prompt.text.substring(0, prompt.text.indexOf(':') + 1)
+                }
+                DialogBuilder.PromptType.THINKING -> "Dennis: (thinking)"
+                else -> ""
             }
+            notification.contentText = when (prompt.type) {
+                DialogBuilder.PromptType.DIALOGUE -> prompt.text.substring(prompt.text.indexOf(':') + 2)
+                else -> prompt.text
+            }
+            notification.dialogPane.style = ".dialog-pane > .content.label {-fx-font-style: italic;}"
+            //notification.dialogPane.children.addAll(DialogBuilder.build())
+
+            if (firstAlert == null)
+                firstAlert = notification
+            if (prevAlert != null) {
+                prevAlert.setOnCloseRequest {
+                    notification.show()
+                    return@setOnCloseRequest
+                }
+            }
+            prevAlert = notification
         }
+        // last alert
+        prevAlert!!.setOnCloseRequest {
+            callback?.invoke()
+            resume()
+            return@setOnCloseRequest
+        }
+
+        // start the chain
+        firstAlert!!.show()
     }
 }
