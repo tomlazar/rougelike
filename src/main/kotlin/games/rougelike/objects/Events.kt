@@ -14,6 +14,15 @@ class Events {
         TEST_PROMPT(-1, {
             LevelManager.current.showPrompts({ Prompt(MESSAGE, "This is a test prompt.") })
         }),
+        PLAN_1B_RAILROAD(10121, {
+            if (!Events.triggeredEvents[PLAN_2_ENTER_SLATTERY_OFFICE]!!) {
+                LevelManager.current.showPrompts({
+                    Prompt(THINKING, "I can't get distracted - Mike said he really needs my help in his office on the 3rd floor.")
+                })
+                false
+            } else
+                true
+        }),
         PLAN_1B_SEE_TARGETING_BOT(10120, {
             LevelManager.current.showPrompts(
                     {
@@ -103,6 +112,15 @@ class Events {
                                 "security terminal - feel free to grab it when you can get past all those bots.")
                     }
             )
+        }),
+        PLAN_4_RAILROAD(10402, {
+            if (!Events.triggeredEvents[PLAN_4_SECURITY_TERMINAL]!!) {
+                LevelManager.current.showPrompts({
+                    Prompt(THINKING, "I can't get distracted - I need to find out what I can from the Wired Office on the 2nd floor.")
+                })
+                false
+            } else
+                true
         }),
         PLAN_4_SECURITY_TERMINAL(10401, {
             games.support.LevelManager.current.showPrompts(
