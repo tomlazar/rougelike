@@ -97,7 +97,13 @@ class GameLevel : ILevel() {
                     gameObjects.add(junker)
                     junker.addEvents(gameScene.scene)
                 }
-                if (gridcell.equipmentSpawn != null) {
+                if (gridcell.personSpawnName != null) {
+                    val person = Person(gameCanvas.graphicsContext2D, gridcell.personSpawnName!!)
+                    gameObjects.add(person)
+                    person.gridx = gridx.toDouble()
+                    person.gridy = gridy.toDouble()
+                }
+                if (gridcell.isEquipmentSpawn) {
                     gameObjects.add(Equipment(gameCanvas.graphicsContext2D, gridx, gridy, gridcell.eventTriggers))
                     gridcell.eventTriggers = mutableListOf()
                 }

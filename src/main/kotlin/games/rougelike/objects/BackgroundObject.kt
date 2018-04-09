@@ -20,7 +20,9 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
     var junkerSpawnType: JunkerType? = null
 
-    var equipmentSpawn: Equipment.EquipmentType? = null
+    var personSpawnName: String? = null
+
+    var isEquipmentSpawn = false
 
     var orientations = mutableListOf<Orientation>()
 
@@ -65,6 +67,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         TRAVERSABLE(8),
         PRECHECK_EVENT(9),
         TEXT(10),
+        PERSON_SPAWN(11),
         ;
 
         companion object {
@@ -107,7 +110,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                         it.isPlayerSpawn = true
                     }
                     BackgroundOption.EQUIPMENT_SPAWN -> {
-                        it.equipmentSpawn = Equipment.EquipmentType.fromId(split[1].toInt())
+                        it.isEquipmentSpawn = true
                     }
                     BackgroundOption.ORIENTATION -> {
                         it.orientations.addAll(
@@ -132,6 +135,9 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                     }
                     BackgroundOption.TEXT -> {
                         it.text = split[1]
+                    }
+                    BackgroundOption.PERSON_SPAWN -> {
+                        it.personSpawnName = split[1]
                     }
                 }
             }

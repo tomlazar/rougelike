@@ -15,14 +15,8 @@ import kotlin.math.atan2
 import kotlin.math.min
 import kotlin.math.sqrt
 
-class Player(gc: GraphicsContext) : IGameObject(gc), IController {
-    val radius = 15.0
+class Player(gc: GraphicsContext) : Person(gc, "Dennis"), IController {
     var speed = Grid.cellSize * 4
-
-    override var height: Double = radius * 2
-    override var width: Double = radius * 2
-    override var x: Double = 0.0
-    override var y: Double = 0.0
 
     var immune = 0
     val immuneTime = (FPS / 2).toInt()
@@ -52,11 +46,6 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
         })
     }
 
-    override fun render() {
-        gc.fill = Color.PEACHPUFF
-        gc.fillRect(x, y, width, height)
-    }
-
     fun hit(amount: Double) {
         if (LevelManager.current.player.immune == 0) {
             LevelManager.current.player.immune = immuneTime
@@ -66,6 +55,8 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
     }
 
     override fun update() {
+        super.update()
+
         if (immune > 0) {
             immune -= 1
         }
