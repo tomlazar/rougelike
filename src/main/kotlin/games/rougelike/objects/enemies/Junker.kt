@@ -1,34 +1,29 @@
 package games.rougelike.objects.enemies
 
 import games.rougelike.FPS
-import games.rougelike.objects.BackgroundObject
-import games.rougelike.objects.Effects
-import games.rougelike.objects.Equipment
-import games.rougelike.objects.Player
+import games.rougelike.objects.*
 import games.support.*
 import games.support.interfaces.IController
 import games.support.interfaces.IGameObject
+import javafx.geometry.BoundingBox
 import javafx.scene.Scene
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
 import javafx.scene.shape.ArcType
 import javafx.scene.text.Text
 import javafx.scene.text.TextAlignment
+import java.awt.Graphics
 import java.util.*
 import kotlin.math.*
 
 @Suppress("ConvertSecondaryConstructorToPrimary")
-open class Junker : IGameObject, IController {
+open class Junker : Person, IController {
     // Junker is the superclass to all basic enemies
 
-    private val radius = Grid.cellSize / 2
-    override var height = radius * 2
-    override var width = radius * 2
     override var x: Double
     override var y: Double
 
     private var target: IGameObject?
-    private var speed: Double
 
     companion object {
         var targetedJunker: Junker? = null
@@ -43,7 +38,7 @@ open class Junker : IGameObject, IController {
     var hackingProgress = 0.0
     val hackTime = 1.5 * FPS * (Effects.HackEffect.HIT.duration / (Effects.HackEffect.HIT.duration + Effects.HackEffect.HIT_WAITING.duration))
 
-    constructor (gc: GraphicsContext, gridX: Double, gridY: Double, target: IGameObject? = null, speed: Double = Grid.cellSize * 1.5) : super(gc) {
+    constructor (gc: GraphicsContext, gridX: Double, gridY: Double, target: IGameObject? = null, speed: Double = Grid.cellSize * 1.5) : super(gc, "Junker", Color.GRAY) {
         x = Grid.mapFromGrid(gridX)
         y = Grid.mapFromGrid(gridY)
         this.target = target
@@ -52,7 +47,7 @@ open class Junker : IGameObject, IController {
 
     override fun addEvents(target: Scene) {
         InputManager.addListener(target, InputBinding.SET_TARGET, InputEventType.CLICKED, {
-            if (!this.dead && getBoundingBox().contains(LevelManager.inputManager.mouseX, LevelManager.inputManager.mouseY)
+            if (!this.dead && BoundingBox(x - 10, y - 10, width + 20, height + 20).contains(LevelManager.inputManager.mouseX, LevelManager.inputManager.mouseY)
                     && Equipment.acquiredEquipment[Equipment.EquipmentType.HACK]!!)
                 switchTargetedJunker(this)
         })
@@ -60,15 +55,13 @@ open class Junker : IGameObject, IController {
 
     var renderPushButtonDelay = 2
     override fun render() {
-        gc.fill = Color.GRAY
-        gc.fillRect(x, y, width, height)
-
+        super.render()
         if (Equipment.acquiredEquipment[Equipment.EquipmentType.PUSH]!! && push == null && this.distanceTo(LevelManager.current.player) <= Player.pushRange && canPush) {
             if (renderPushButtonDelay <= 0) {
                 gc.fill = Color.WHITE
                 gc.stroke = Color.BLACK
-                gc.fillRoundRect(x + width / 4, y + width / 4, width / 2, height / 2, 5.0, 5.0)
-                gc.strokeRoundRect(x + width / 4, y + width / 4, width / 2, height / 2, 5.0, 5.0)
+                gc.fillRoundRect(x + width / 2 - height / 4, y + height / 4, height / 2, height / 2, 5.0, 5.0)
+                gc.strokeRoundRect(x + width / 2 - height / 4, y + height / 4, height / 2, height / 2, 5.0, 5.0)
 
                 gc.fill = Color.BLACK
                 val text = if (InputBinding.PUSH.input.first() is KeyInput) InputBinding.PUSH.input.first().toString() else "*"
@@ -82,17 +75,19 @@ open class Junker : IGameObject, IController {
             renderPushButtonDelay = 2
 
         gc.lineWidth = 1.5
-        val targetSymbolRadius = radius * sqrt(2.0) + gc.lineWidth + 3
+        val targetSymbolRadius = (height + 10.0) / 2 * sqrt(2.0) + gc.lineWidth + 3
         gc.stroke = Color.DARKRED
         if (isBeingTargeted) {
-            gc.strokeOval(x + radius - targetSymbolRadius, y + radius - targetSymbolRadius, targetSymbolRadius * 2, targetSymbolRadius * 2)
+            gc.strokeOval(x + width / 2 - targetSymbolRadius, y + height / 2 - 10.0 - targetSymbolRadius, targetSymbolRadius * 2, targetSymbolRadius * 2)
         }
         gc.lineWidth *= 3
-        gc.strokeArc(x + radius - targetSymbolRadius, y + radius - targetSymbolRadius, targetSymbolRadius * 2, targetSymbolRadius * 2,
+        gc.strokeArc(x + width / 2 - targetSymbolRadius, y + height / 2 - 10.0 - targetSymbolRadius, targetSymbolRadius * 2, targetSymbolRadius * 2,
                 90 - 180 * (hackingProgress / hackTime), 360 * (hackingProgress / hackTime), ArcType.OPEN)
     }
 
     override fun update() {
+        super.update()
+
         if (push != null) {
             val move = pushSpeed / FPS / distanceTo(Grid.mapFromGrid(this.push!!.gridx), Grid.mapFromGrid(this.push!!.gridy))
             this.x = this.x + (Grid.mapFromGrid(this.push!!.gridx) - this.x) * move
@@ -125,7 +120,9 @@ open class Junker : IGameObject, IController {
     private fun update_Move() {
         // track the target, moving along the grid
 
+        moving = false
         if (target != null && tracking) {
+            moving = true
             if (target!!.dead)
                 target = null
             else {
@@ -145,6 +142,12 @@ open class Junker : IGameObject, IController {
                     } else {
                         dy += (if (target!!.gridy.toInt() <= gridy) -1.0 else 1.0)
                     }
+                }
+
+                if ((abs(gridx - target!!.gridx) < 1) && (abs(gridy - target!!.gridy) < 1)) {
+                    val diagSpeed = 1.0 / sqrt(2.0)
+                    dx = if (target!!.gridx <= gridx) -diagSpeed else diagSpeed
+                    dy = if (target!!.gridy <= gridy) -diagSpeed else diagSpeed
                 }
 
                 dx *= speed / FPS
@@ -168,12 +171,12 @@ open class Junker : IGameObject, IController {
         }
     }
 
-    var push : BackgroundObject.PushLocation? = null
+    var push: BackgroundObject.PushLocation? = null
     val pushSpeed = Grid.cellSize * 8
 
     val canPush get() = this.intersectingGridSquares(LevelManager.current.grid.map).any { o -> o.push != null }
 
-    fun tryPush() : Boolean {
+    fun tryPush(): Boolean {
         val pushOffset = this.intersectingGridSquares(LevelManager.current.grid.map).firstOrNull { o -> o.push != null }?.push
         return if (pushOffset != null) {
             push = BackgroundObject.PushLocation(gridx + pushOffset.gridx, gridy + pushOffset.gridy)

@@ -32,7 +32,7 @@ abstract class ILevel {
     }
 
     abstract fun start(stage: Stage?)
-    abstract fun stop()
+    abstract fun stop(callback: () -> Unit)
 
     private var suspendCounter = 0
     val isSuspended get() = suspendCounter > 0

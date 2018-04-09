@@ -54,13 +54,13 @@ class Events {
                                         "continuously slamming itself against Mike's door.")
                             },
                             { Prompt(THINKING, "That must be the bot that Mike was talking about.") },
-                            { Prompt(THINKING, "Hmm... It doesn't look as mindless as the others. I think I'll have to disable it somehow.") },
+                            { Prompt(THINKING, "Hmm... This one is really fixated on Mike's office. I think I'll have to disable it somehow.") },
                             { Prompt(NARRATION, "An idea hit Dennis, his face widening in a smile.") },
                             { Prompt(THINKING, "I'll give this piece of junk what for! I just need to find a long drop...") },
                             {
                                 Equipment.acquiredEquipment[Equipment.EquipmentType.PUSH] = true
-                                Prompt(MESSAGE, "\"Push Junker\" ability unlocked: press ${InputBinding.PUSH.input.first()} when " +
-                                        "near a junker that is near a ledge.")
+                                Prompt(MESSAGE, "\"Push Junker\" ability unlocked: lure a robot directly adjacent to a ledge and " +
+                                        "press ${InputBinding.PUSH.input.first()} when the icon appears.")
                             }
                     )
                 }),
@@ -89,7 +89,7 @@ class Events {
                             {
                                 HUD.objective = "Investigate 2nd floor Wired Office"
                                 Prompt(DIALOGUE, "Dr. Slattery: Sounds good. Hey, I saw your research students using that system analyzer " +
-                                        "you gave them to debug XINU earlier today. You should go get that; I bet it will work wonders on" +
+                                        "you gave them to debug XINU earlier today. You should go get that; I bet it will work wonders on " +
                                         "these death machines rampaging through Cudahy.")
                             },
                             { Prompt(DIALOGUE, "Dennis: Good call. See you, Mike.") }
@@ -289,7 +289,7 @@ class Events {
                     games.support.LevelManager.current.showPrompts(
                             {
                                 if (Equipment.acquiredEquipment[Equipment.EquipmentType.CROWBAR]!!)
-                                    Prompt(NARRATION, "Prying open the doors with the crowbar, you make it into the elevator.")
+                                    Prompt(NARRATION, "Prying open the doors with the crowbar, Dennis makes it into the elevator.")
                                 else
                                     Prompt(NARRATION, "The elevator arrives, but the doors jam with a loud \"BANG!\" after opening only about two inches.")
                             }
@@ -303,13 +303,37 @@ class Events {
                             { Prompt(THINKING, "...") },
                             { Prompt(THINKING, "I wonder if that means I'll actually get responses to my emails now.") }
                     )
-                })
+                }),
+        MSCS_CLOSED(204,
+                {
+                    LevelManager.current.showPrompts(
+                            {
+                                if (!Events.triggeredEvents[GameEvent.PLAN_2_ENTER_SLATTERY_OFFICE]!!)
+                                    Prompt(NARRATION, "The office is closed up for the evening, but Dennis sees Fr. Schwarz's office has a light on.")
+                                else
+                                    Prompt(NARRATION, "The office is closed up for the evening. No lights are on inside.")
+                            }
+                    )
+                }),
+        GOD_MODE(300,
+                {
+                    LevelManager.current.showPrompts(
+                            { Prompt(MESSAGE, "You would normally die here, but since you're in God mode, we'll reset your damage.") },
+                            {
+                                HUD.corruption = 0.0
+                                Prompt(MESSAGE, "You have ${HUD.deaths} death${if (HUD.deaths == 1) "" else "s"}.")
+                            }
+                    )
+                    Events.triggeredEvents[GOD_MODE] = false
+                    {}
+                }
+        ),
         ;
 
         fun trigger(): Boolean {
             if (!triggeredEvents[this]!!) {
-                val out = this.action()
                 Events.triggeredEvents[this] = true
+                val out = this.action()
                 if (out is Boolean && out)
                     return true
             }

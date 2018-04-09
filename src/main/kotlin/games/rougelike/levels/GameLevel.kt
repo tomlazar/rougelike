@@ -17,6 +17,7 @@ import javafx.scene.Scene
 import javafx.scene.SubScene
 import javafx.scene.canvas.Canvas
 import javafx.scene.layout.VBox
+import javafx.scene.paint.Color
 import javafx.stage.Stage
 import javafx.util.Duration
 import java.io.File
@@ -42,18 +43,26 @@ class GameLevel : ILevel() {
 
     var levelId: String = ""
 
+    var starting: Boolean? = false
+    var fadeOut = 1.0
+
+    lateinit var gameCanvas: Canvas
+    val gridPadding = 15
+
+
     fun build(gridfile: String) {
         println("Loading level: $gridfile")
 
         // Create the main game window
         levelId = LEVEL_REGEX.matchEntire(gridfile)!!.groupValues[1]
+        val rowPadding = Array(gridPadding, { BackgroundObject.fromCode("0") })
         val map = Util.transpose(Util.readCsv(gridfile))
                 .map { row: Array<String> ->
                     row.map { cell: String ->
                         BackgroundObject.fromCode(cell)
                     }.toTypedArray()
                 }.toTypedArray()
-        val gameCanvas = Canvas(Grid.mapFromGrid(map.size.toDouble()), Grid.mapFromGrid(if (map.isEmpty()) 0.0 else map[0].size.toDouble()))
+        gameCanvas = Canvas(Grid.mapFromGrid(map.size.toDouble()), Grid.mapFromGrid(if (map.isEmpty()) 0.0 else map[0].size.toDouble()))
         val gameScene = SubScene(Group(gameCanvas), WIDTH, HEIGHT)
         player = Player(gameCanvas.graphicsContext2D)
         camera = TrackingCamera(gameCanvas.graphicsContext2D, player)
@@ -82,23 +91,35 @@ class GameLevel : ILevel() {
                 }
                 if (gridcell.junkerSpawnType != null) {
                     val speed = Grid.cellSize * (Random().nextDouble() + 1.5)
+                    val target =
+                            if (gridcell.targetName != null) {
+                                val it = gameObjects.find { o -> o is Person && (o as Person).name.equals(gridcell.targetName) }!! as Person
+                                it.speed = speed
+                                it
+                            } else
+                                player
+
                     val junker =
                             when (gridcell.junkerSpawnType!!) {
                                 BackgroundObject.JunkerType.SHIELD ->
                                     ShieldJunker(gameCanvas.graphicsContext2D,
                                             gridx.toDouble(), gridy.toDouble(),
-                                            player, speed / 3)
+                                            target, speed / 3)
                                 BackgroundObject.JunkerType.NORMAL ->
                                     Junker(gameCanvas.graphicsContext2D,
                                             gridx.toDouble(), gridy.toDouble(),
-                                            player, speed)
+                                            target, speed)
                             }
 
                     gameObjects.add(junker)
                     junker.addEvents(gameScene.scene)
                 }
                 if (gridcell.personSpawnName != null) {
-                    val person = Person(gameCanvas.graphicsContext2D, gridcell.personSpawnName!!)
+                    val person =
+                            if (gridcell.patrolPoints.isEmpty())
+                                Person(gameCanvas.graphicsContext2D, gridcell.personSpawnName!!)
+                            else
+                                PatrolPerson(gameCanvas.graphicsContext2D, gridcell.personSpawnName!!, gridcell.patrolPoints.toTypedArray())
                     gameObjects.add(person)
                     person.gridx = gridx.toDouble()
                     person.gridy = gridy.toDouble()
@@ -122,6 +143,7 @@ class GameLevel : ILevel() {
 
         loop = Timeline(kf)
         loop.cycleCount = Animation.INDEFINITE
+        suspend()
     }
 
     override fun start(stage: Stage?) {
@@ -130,16 +152,46 @@ class GameLevel : ILevel() {
         stage.height = HEIGHT + HUD.HEIGHT
         this.render()
         stage.show()
+        starting = true
         this.update()
         loop.play()
+
     }
 
-    override fun stop() {
-        loop.pause()
+    var stopCallback = {}
+    override fun stop(callback: () -> Unit) {
+        suspend()
+        starting = false
+        stopCallback = callback
     }
 
     override fun render() {
         grid.render()
         super.render()
+        val gc = gameCanvas.graphicsContext2D
+        gc.fill = Color(0.0, 0.0, 0.0, fadeOut)
+        gc.fillRect(0.0, 0.0, WIDTH, HEIGHT)
+    }
+
+    override fun update() {
+        super.update()
+        if (starting != null) {
+            if (starting!!) {
+                fadeOut -= 1.0 / FPS
+                if (fadeOut <= 0.0) {
+                    fadeOut = 0.0
+                    resume()
+                    starting = null
+                }
+            } else {
+                fadeOut += 1.0 / FPS
+                if (fadeOut >= 1.0) {
+                    fadeOut = 1.0
+                    starting = null
+                    loop.pause()
+                    stopCallback.invoke()
+                }
+            }
+        }
     }
 }

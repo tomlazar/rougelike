@@ -16,7 +16,6 @@ import kotlin.math.min
 import kotlin.math.sqrt
 
 class Player(gc: GraphicsContext) : Person(gc, "Dennis"), IController {
-    var speed = Grid.cellSize * 4
 
     var immune = 0
     val immuneTime = (FPS / 2).toInt()
@@ -25,14 +24,18 @@ class Player(gc: GraphicsContext) : Person(gc, "Dennis"), IController {
         val pushRange = Grid.cellSize * 2
     }
 
+    val maxGrenadeCooldown = (2 * FPS).toInt()
+    var grenadeCooldown = 0
+
     override fun addEvents(target: Scene) {
         InputManager.addListener(target, InputBinding.GRENADE, InputEventType.CLICKED, {
-            if (Equipment.acquiredEquipment[Equipment.EquipmentType.GRENADE]!!) {
+            if (Equipment.acquiredEquipment[Equipment.EquipmentType.GRENADE]!! && grenadeCooldown <= 0) {
                 val dx = LevelManager.inputManager.mouseX - x
                 val dy = LevelManager.inputManager.mouseY - y
                 LevelManager.current.addLater(Grenade(gc, x, y,
                         airtime = min(Grenade.airtime, sqrt(pow(dx, 2.0) + pow(dy, 2.0)) / Grenade.speed),
                         direction = atan2(dy, dx)))
+                grenadeCooldown = maxGrenadeCooldown
             }
         })
         InputManager.addListener(target, InputBinding.PUSH, InputEventType.CLICKED, {
@@ -60,6 +63,7 @@ class Player(gc: GraphicsContext) : Person(gc, "Dennis"), IController {
         if (immune > 0) {
             immune -= 1
         }
+        grenadeCooldown--
 
         moving = listOf(InputBinding.LEFT, InputBinding.RIGHT, InputBinding.DOWN, InputBinding.UP)
                 .any { b -> LevelManager.inputManager.isInputActive(b) }

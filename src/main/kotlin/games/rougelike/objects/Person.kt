@@ -1,6 +1,7 @@
 package games.rougelike.objects
 
 import games.rougelike.FPS
+import games.support.Grid
 import games.support.interfaces.IGameObject
 import javafx.embed.swing.SwingFXUtils
 import javafx.scene.canvas.GraphicsContext
@@ -12,7 +13,8 @@ import java.io.*
 import java.lang.Math.pow
 import kotlin.math.abs
 
-open class Person(gc: GraphicsContext, val name: String) : IGameObject(gc) {
+open class Person(gc: GraphicsContext, val name: String, val bodyColor: Color = Color.PEACHPUFF) : IGameObject(gc) {
+    var speed = Grid.cellSize * 4
 
     override var height: Double = 30.0
     override var width: Double = 15.0
@@ -40,14 +42,14 @@ open class Person(gc: GraphicsContext, val name: String) : IGameObject(gc) {
         val r = Rotate(bounceProgress * rotateDistance, this.x + width / 2, this.y + height)
         gc.setTransform(r.mxx, r.myx, r.mxy, r.myy, r.tx, r.ty - bounce * (1.0 - pow(1.0 - (abs(bounceProgress) / rotateDistance), 2.0)))
 
-        gc.fill = Color.PEACHPUFF
+        gc.fill = bodyColor
         gc.fillRoundRect(x, y - 10.0, width, height + 10.0, 10.0, 10.0)
         if (head != null) {
             val realHeight = head.height * (headWidth / head.width)
             gc.drawImage(head, x + width / 2 - headWidth / 2, y - 10.0 - realHeight / 2, headWidth, realHeight)
         } else {
             gc.fill = Color.GOLD
-            gc.stroke = Color.PEACHPUFF.darker()
+            gc.stroke = bodyColor.darker()
             gc.lineWidth = 3.0
             gc.fillOval(x + width / 2 - headWidth / 2, y - 10.0 - headHeight / 2, headWidth, headHeight)
             gc.strokeOval(x + width / 2 - headWidth / 2, y - 10.0 - headHeight / 2, headWidth, headHeight)

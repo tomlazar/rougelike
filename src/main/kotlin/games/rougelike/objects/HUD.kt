@@ -20,6 +20,7 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
         const val MAX_CORRUPTION = 5
         var corruption = 0.0
         var score = 0.0
+        var deaths = 0
         var objective = ""
     }
 
@@ -87,9 +88,15 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
         }
     }
 
+    val godMode = true
+
     override fun update() {
         if (corruption >= MAX_CORRUPTION) {
-            LevelManager.current.player.dead = true
+            deaths++
+            if (godMode) {
+                Events.GameEvent.GOD_MODE.trigger()
+            } else
+                LevelManager.current.player.dead = true
         }
     }
 }

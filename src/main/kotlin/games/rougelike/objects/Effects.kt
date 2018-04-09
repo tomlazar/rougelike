@@ -73,11 +73,12 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
         private val hackSourceX get () = LevelManager.current.player.x + LevelManager.current.player.width / 2
         private val hackSourceY get () = LevelManager.current.player.y + LevelManager.current.player.height / 2
 
-        val canHitTargetNow get() =
-            Junker.targetedJunker != null
-                    && LevelManager.current.player.distanceTo(Junker.targetedJunker!!) < hackRange
-                    && (Junker.targetedJunker!! !is ShieldJunker // if we have a shield junker, check if it is shielded:
-                    || !(Junker.targetedJunker!! as ShieldJunker).protectsFrom(hackSourceX, hackSourceY))
+        val canHitTargetNow
+            get() =
+                Junker.targetedJunker != null
+                        && LevelManager.current.player.distanceTo(Junker.targetedJunker!!) < hackRange
+                        && (Junker.targetedJunker!! !is ShieldJunker // if we have a shield junker, check if it is shielded:
+                        || !(Junker.targetedJunker!! as ShieldJunker).protectsFrom(hackSourceX, hackSourceY))
     }
 
 
@@ -89,8 +90,11 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     }
 
     fun update_hackEffect() {
-        val hacking = Equipment.acquiredEquipment[Equipment.EquipmentType.HACK]!!
-                && LevelManager.inputManager.isInputActive(InputBinding.HACK) && Junker.targetedJunker != null
+        val hacking = (Equipment.acquiredEquipment[Equipment.EquipmentType.HACK]!!
+                && (LevelManager.inputManager.isInputActive(InputBinding.HACK)
+                || (hackEffectState == HackEffect.HIT || hackEffectState == HackEffect.MISS))
+                && Junker.targetedJunker != null)
+
 
         if (hackEffectState == HackEffect.HIT && Junker.targetedJunker != null)
             Junker.targetedJunker!!.hackingProgress += 1

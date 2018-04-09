@@ -16,10 +16,14 @@ class LevelManager {
             get() = level!!
             set(value) {
                 if (level != null) {
-                    level!!.stop()
+                    level!!.stop(callback = {
+                        level = value
+                        value.start(stage)
+                    })
+                } else {
+                    level = value
+                    value.start(stage)
                 }
-                level = value
-                value.start(stage)
             }
     }
 }

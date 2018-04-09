@@ -21,6 +21,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
     var junkerSpawnType: JunkerType? = null
 
     var personSpawnName: String? = null
+    var targetName: String? = null
 
     var isEquipmentSpawn = false
 
@@ -33,6 +34,8 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
     var precheckEventTriggers = mutableListOf<Events.GameEvent>()
 
     var text = ""
+
+    var patrolPoints = mutableListOf<Pair<Double, Double>>()
 
     class PushLocation(val gridx: Double, val gridy: Double)
 
@@ -105,6 +108,8 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                     }
                     BackgroundOption.JUNKER_SPAWN -> {
                         it.junkerSpawnType = JunkerType.fromId(split[1].toInt())
+                        if (split.size > 2)
+                            it.targetName = split[2]
                     }
                     BackgroundOption.PLAYER_SPAWN -> {
                         it.isPlayerSpawn = true
@@ -138,6 +143,10 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                     }
                     BackgroundOption.PERSON_SPAWN -> {
                         it.personSpawnName = split[1]
+                        if (split.size > 2) {
+                            for (i in 1 until split.size / 2)
+                                it.patrolPoints.add(Pair(split[i*2].toDouble(), split[i*2+1].toDouble()))
+                        }
                     }
                 }
             }
