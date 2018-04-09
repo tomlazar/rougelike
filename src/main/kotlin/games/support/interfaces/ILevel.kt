@@ -34,7 +34,8 @@ abstract class ILevel {
     abstract fun start(stage: Stage?)
     abstract fun stop()
 
-    var isSuspended = false
+    private var suspendCounter = 0
+    val isSuspended get() = suspendCounter > 0
 
     open fun render() {
         gameObjects.forEach({ c: IGameObject ->
@@ -65,22 +66,23 @@ abstract class ILevel {
 
     fun suspend() {
         LevelManager.inputManager.clear()
-        loop.pause()
-        isSuspended = true
+        suspendCounter++
     }
 
     fun resume() {
-        loop.play()
-        isSuspended = false
+        suspendCounter--
     }
 
     fun toggleSuspended() {
-        isSuspended = !isSuspended
+        if (isSuspended)
+            resume()
+        else
+            suspend()
     }
 
     data class Prompt(val type: DialogBuilder.PromptType, val text: String)
 
-    fun showPrompts(vararg prompts: () -> Prompt, callback: (() -> Unit)? = null) {
+    fun showPrompts(vararg prompts: () -> Prompt, callback: (() -> Any)? = null) {
         if (prompts.isEmpty())
             return
 
@@ -91,7 +93,7 @@ abstract class ILevel {
         })
     }
 
-    private fun showPromptsStartingWith(i: Int, prompts: Array<out () -> Prompt>, callback: (() -> Unit)) {
+    private fun showPromptsStartingWith(i: Int, prompts: Array<out () -> Prompt>, callback: (() -> Any)) {
         if (i >= prompts.size) {
             callback.invoke()
         } else {

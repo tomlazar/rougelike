@@ -75,16 +75,26 @@ class Player(gc: GraphicsContext) : IGameObject(gc), IController {
 
         moveOnGrid(x + dx, y + dy, LevelManager.current.grid.map)
 
-        for (triggerEvent in intersectingGridSquares().flatMap { o -> o.eventTriggers }.toSet()) {
-            triggerEvent.trigger()
-        }
-        for (resetEvent in intersectingGridSquares().flatMap { o -> o.eventResets }.toSet()) {
-            resetEvent.reset()
+        var eventsPassed = true
+        for (precheckEvent in intersectingGridSquares().flatMap { o -> o.precheckEventTriggers }.toSet()) {
+            if (!precheckEvent.trigger()) {
+                eventsPassed = false
+                break
+            }
         }
 
-        val teleportSpace = intersectingGridSquares(LevelManager.current.grid.map).find { o: BackgroundObject -> o.teleporter != null }
-        if (teleportSpace != null) {
-            teleport(teleportSpace.teleporter!!)
+        if (eventsPassed) {
+            for (triggerEvent in intersectingGridSquares().flatMap { o -> o.eventTriggers }.toSet()) {
+                triggerEvent.trigger()
+            }
+            for (resetEvent in intersectingGridSquares().flatMap { o -> o.eventResets }.toSet()) {
+                resetEvent.reset()
+            }
+
+            val teleportSpace = intersectingGridSquares(LevelManager.current.grid.map).find { o: BackgroundObject -> o.teleporter != null }
+            if (teleportSpace != null) {
+                teleport(teleportSpace.teleporter!!)
+            }
         }
     }
 

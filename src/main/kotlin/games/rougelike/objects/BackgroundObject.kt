@@ -1,8 +1,12 @@
 package games.rougelike.objects
 
 import games.support.Grid
+import games.support.InputBinding
+import games.support.KeyInput
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
+import javafx.scene.text.Text
+import javafx.scene.text.TextAlignment
 
 class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
@@ -24,6 +28,9 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
     var eventTriggers = mutableListOf<Events.GameEvent>()
     var eventResets = mutableListOf<Events.GameEvent>()
+    var precheckEventTriggers = mutableListOf<Events.GameEvent>()
+
+    var text = ""
 
     class PushLocation(val gridx: Double, val gridy: Double)
 
@@ -56,6 +63,8 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         EVENT_TRIGGER(6),
         EVENT_RESET(7),
         TRAVERSABLE(8),
+        PRECHECK_EVENT(9),
+        TEXT(10),
         ;
 
         companion object {
@@ -117,6 +126,12 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                     }
                     BackgroundOption.TRAVERSABLE -> {
                         it.traversable = split[1].toInt() != 0
+                    }
+                    BackgroundOption.PRECHECK_EVENT -> {
+                        it.precheckEventTriggers.add(Events.GameEvent.fromId(split[1].toInt())!!)
+                    }
+                    BackgroundOption.TEXT -> {
+                        it.text = split[1]
                     }
                 }
             }
@@ -203,6 +218,10 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
             }
         }
 
+        gc.fill = Color.BLACK
+        val textObj = Text(text)
+        textObj.textAlignment = TextAlignment.CENTER
+        gc.fillText(text, x + Grid.cellSize / 2 - (textObj.layoutBounds.width / 2), y + Grid.cellSize / 2 + (textObj.layoutBounds.height / 3))
     }
 
 }

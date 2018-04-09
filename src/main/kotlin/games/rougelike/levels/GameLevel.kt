@@ -98,7 +98,7 @@ class GameLevel : ILevel() {
                     junker.addEvents(gameScene.scene)
                 }
                 if (gridcell.equipmentSpawn != null) {
-                    gameObjects.add(Equipment(gameCanvas.graphicsContext2D, gridx, gridy, gridcell.equipmentSpawn!!, gridcell.eventTriggers))
+                    gameObjects.add(Equipment(gameCanvas.graphicsContext2D, gridx, gridy, gridcell.eventTriggers))
                     gridcell.eventTriggers = mutableListOf()
                 }
             }
