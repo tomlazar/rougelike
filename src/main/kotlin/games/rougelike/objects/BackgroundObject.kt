@@ -161,7 +161,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         when (this.type) {
             BackgroundType.GAP -> {
                 gc.stroke = Color.TRANSPARENT
-                gc.fill = Color(0.9, 0.9, 0.9, 1.0)
+                gc.fill = Color(0.95, 0.95, 0.95, 1.0)
             }
             else -> gc.stroke = Color.BLACK
         }
