@@ -15,7 +15,7 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
 
     companion object {
         val WIDTH = GameLevel.WIDTH
-        val HEIGHT = 80.0
+        val HEIGHT = 100.0
 
         const val MAX_CORRUPTION = 5
         var corruption = 0.0
@@ -78,6 +78,7 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
             current = savedCurrent
         }
 
+        val savedCurrent = current
         if (objective != "") {
             gc.fill = Color.SKYBLUE
             val objectiveText = "Objective: $objective"
@@ -86,6 +87,13 @@ class HUD(gc: GraphicsContext) : IGameObject(gc) {
             gc.fillText(objectiveText, current, currentHeight + height)
             current += sep + width
         }
+        current = savedCurrent
+
+        gc.fill = Color.PALEVIOLETRED
+        val floorText = "Level: ${LevelManager.current.levelId}"
+        val height = Text(floorText).layoutBounds.height
+        val width = Text(floorText).layoutBounds.width
+        gc.fillText(floorText, current, (2.0 + height) * 4)
     }
 
     val godMode = true

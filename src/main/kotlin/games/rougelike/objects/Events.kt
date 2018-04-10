@@ -327,6 +327,35 @@ class Events {
                     {}
                 }
         ),
+        DIALOGUE_JOSIE(400, {
+            LevelManager.current.showPrompts(
+                    { DialogBuilder.DialogPrompt("Josie", "Dr. Brylow! What are you doing?!") },
+                    { DialogBuilder.DialogPrompt("Dennis", "...") },
+                    { DialogBuilder.DialogPrompt("Dennis", "I mean... I was going to use the elevator.") },
+                    {
+                        DialogBuilder.DialogPrompt("Josie", "I barricaded it on purpose! There are crazy machines everywhere! This is my " +
+                                "hiding spot.")
+                    },
+                    {
+                        DialogBuilder.DialogPrompt("Dennis", "Well, don't worry. I had to use this crowbar to get it open; I'm sure " +
+                                "it'll jam again on my way out.")
+                    },
+                    { DialogBuilder.DialogPrompt("Josie", "If you say so...") }
+            )
+        }),
+        DIALOGUE_ZAN(401, {
+            LevelManager.current.showPrompts(
+                    { DialogBuilder.DialogPrompt("Zan", "Hey, Dennis.") },
+                    { DialogBuilder.DialogPrompt("Zan", "Want some pretzels?") },
+                    { DialogBuilder.DialogPrompt("Dennis", "Uh... I think I'm alright. A bit busy at the moment.") },
+                    { DialogBuilder.DialogPrompt("Rene", "Are you sure? The vending machine just gave us five extra.") },
+                    { DialogBuilder.DialogPrompt("Dennis", "Nah. I'll see you guys later.") },
+                    { DialogBuilder.DialogPrompt("Zan", "Well, more for me.") },
+                    { DialogBuilder.DialogPrompt("Rene", "Hey! You're gonna share, right?") },
+                    { DialogBuilder.DialogPrompt("Zan", "Nah...") },
+                    { DialogBuilder.DialogPrompt("Rene", "Aww, screw you...") }
+            )
+        })
         ;
 
         fun trigger(): Boolean {

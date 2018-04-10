@@ -15,7 +15,7 @@ class Equipment(gc: GraphicsContext, gridx: Int, gridy: Int, var pickupEvent: Li
     override var y: Double = Grid.mapFromGrid(gridy.toDouble()) + Grid.cellSize / 2 - height / 2
 
     companion object {
-        val acquiredEquipment = hashMapOf(*EquipmentType.values().map { t -> Pair(t, false) }.toTypedArray())
+        val acquiredEquipment = hashMapOf(*EquipmentType.values().map { t -> Pair(t, true) }.toTypedArray())
 
         init {
             //acquiredEquipment[EquipmentType.CROWBAR] = true

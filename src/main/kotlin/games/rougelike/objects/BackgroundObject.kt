@@ -42,7 +42,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
 
     enum class BackgroundType(val id: Int, val traversable: Boolean, val fill: Color, val fill2: Color = Color.TRANSPARENT) {
         DEFAULT(-1, true, Color.PINK),
-        GAP(0, false, Color.WHITE),
+        GAP(0, false, Color.TRANSPARENT),
         FLOOR(1, true, Color.GREEN),
         WALL(2, false, Color.BLACK),
         STAIR_DOWN(4, true, Color.AZURE),

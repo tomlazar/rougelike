@@ -27,6 +27,8 @@ abstract class ILevel {
     lateinit var scene: Scene
     lateinit var loop: Timeline
 
+    var levelId: String = ""
+
     fun addLater(o: IGameObject) {
         addLaterQueue.add(o)
     }

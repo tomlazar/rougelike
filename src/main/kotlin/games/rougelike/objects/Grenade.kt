@@ -55,7 +55,6 @@ class Grenade(gc: GraphicsContext, x: Double, y: Double, airtime: Double = Grena
                 for (junker in LevelManager.current.currentGameObjects.map { o: IGameObject -> o as? ShieldJunker }.filter { j: ShieldJunker? -> j != null }) {
                     if (junker!!.protectsFrom(x, y) && sqrt(pow(nextx - junker.cx, 2.0) + pow(nexty - junker.cy, 2.0)) <= junker.shieldRadius + height / 2) {
                         val normalAngle = atan2(cy - junker.cy, cx - junker.cx)
-                        println("$direction -> $normalAngle -> ${normalAngle + (normalAngle - (direction - 180))}")
                         direction = normalAngle + (normalAngle - (direction - PI))
                     }
                 }

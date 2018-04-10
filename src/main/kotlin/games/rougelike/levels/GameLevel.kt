@@ -41,7 +41,6 @@ class GameLevel : ILevel() {
         fun getLevel(id: String) = levels.find { l: GameLevel -> l.levelId.equals(id) }
     }
 
-    var levelId: String = ""
 
     var starting: Boolean? = false
     var fadeOut = 1.0
