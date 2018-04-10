@@ -53,7 +53,8 @@ abstract class ILevel {
                 if (o.dead)
                     removeLaterQueue.add(o)
             })
-        }
+        } else
+            gameObjects.forEach { o -> (o as? TrackingCamera)?.update() }
 
         addLaterQueue.forEach { o: IGameObject -> gameObjects.add(o) }
         addLaterQueue.map { o: IGameObject -> o as? IController }

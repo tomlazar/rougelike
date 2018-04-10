@@ -3,6 +3,7 @@ package games.rougelike.objects
 import games.support.Grid
 import games.support.InputBinding
 import games.support.KeyInput
+import games.support.LevelManager
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.paint.Color
 import javafx.scene.text.Text
@@ -145,7 +146,7 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
                         it.personSpawnName = split[1]
                         if (split.size > 2) {
                             for (i in 1 until split.size / 2)
-                                it.patrolPoints.add(Pair(split[i*2].toDouble(), split[i*2+1].toDouble()))
+                                it.patrolPoints.add(Pair(split[i * 2].toDouble(), split[i * 2 + 1].toDouble()))
                         }
                     }
                 }
@@ -155,11 +156,12 @@ class BackgroundObject(var type: BackgroundType = BackgroundType.GAP) {
         }
     }
 
-    fun render(gc: GraphicsContext, x: Double, y: Double) {
+    fun render(gc: GraphicsContext, x: Double, y: Double, fadeFill: Double = 1.0) {
         gc.fill = this.type.fill
         when (this.type) {
             BackgroundType.GAP -> {
                 gc.stroke = Color.TRANSPARENT
+                gc.fill = Color(0.9, 0.9, 0.9, 1.0)
             }
             else -> gc.stroke = Color.BLACK
         }

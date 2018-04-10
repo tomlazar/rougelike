@@ -47,15 +47,13 @@ class GameLevel : ILevel() {
     var fadeOut = 1.0
 
     lateinit var gameCanvas: Canvas
-    val gridPadding = 15
-
+    lateinit var gameScene: SubScene
 
     fun build(gridfile: String) {
         println("Loading level: $gridfile")
 
         // Create the main game window
         levelId = LEVEL_REGEX.matchEntire(gridfile)!!.groupValues[1]
-        val rowPadding = Array(gridPadding, { BackgroundObject.fromCode("0") })
         val map = Util.transpose(Util.readCsv(gridfile))
                 .map { row: Array<String> ->
                     row.map { cell: String ->
@@ -63,7 +61,7 @@ class GameLevel : ILevel() {
                     }.toTypedArray()
                 }.toTypedArray()
         gameCanvas = Canvas(Grid.mapFromGrid(map.size.toDouble()), Grid.mapFromGrid(if (map.isEmpty()) 0.0 else map[0].size.toDouble()))
-        val gameScene = SubScene(Group(gameCanvas), WIDTH, HEIGHT)
+        gameScene = SubScene(Group(gameCanvas), WIDTH, HEIGHT)
         player = Player(gameCanvas.graphicsContext2D)
         camera = TrackingCamera(gameCanvas.graphicsContext2D, player)
         gameScene.camera = camera.sceneCamera
@@ -152,10 +150,9 @@ class GameLevel : ILevel() {
         stage.height = HEIGHT + HUD.HEIGHT
         this.render()
         stage.show()
-        starting = true
         this.update()
+        starting = true
         loop.play()
-
     }
 
     var stopCallback = {}
@@ -166,11 +163,22 @@ class GameLevel : ILevel() {
     }
 
     override fun render() {
-        grid.render()
-        super.render()
+        val fadeColor = Color(0.0, 0.0, 0.0, fadeOut)
+        scene.fill = fadeColor
+        gameScene.fill = fadeColor
+
         val gc = gameCanvas.graphicsContext2D
-        gc.fill = Color(0.0, 0.0, 0.0, fadeOut)
-        gc.fillRect(0.0, 0.0, WIDTH, HEIGHT)
+        gc.fill = fadeColor
+        gc.fillRect(0.0, 0.0, grid.mapWidth * Grid.cellSize, grid.mapHeight * Grid.cellSize)
+
+        grid.render(fadeOut)
+        super.render()
+
+        scene.fill = fadeColor
+        gameScene.fill = fadeColor
+
+        gc.fill = fadeColor
+        gc.fillRect(0.0, 0.0, grid.mapWidth * Grid.cellSize, grid.mapHeight * Grid.cellSize)
     }
 
     override fun update() {

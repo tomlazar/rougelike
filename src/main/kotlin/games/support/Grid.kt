@@ -26,12 +26,12 @@ class Grid(val gc: GraphicsContext, val map: Array<Array<BackgroundObject>> = de
         })
     }
 
-    fun render() {
-        gc.fill = Color.BLUE
+    fun render(fadeFill: Double) {
+        gc.fill = Color.WHITE
 
         for ((x, xarr) in map.withIndex()) {
             for ((y, yval) in xarr.withIndex()) {
-                yval.render(gc, x * cellSize, y * cellSize)
+                yval.render(gc, x * cellSize, y * cellSize, fadeFill)
             }
         }
     }

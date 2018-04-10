@@ -15,7 +15,7 @@ class ShieldJunker(gc: GraphicsContext, gridX: Double, gridY: Double, var target
     var currentAngle = 0.0
     var angleSpeed = 180.0 / 3.0 / FPS
     val shieldArc = 150.0
-    val shieldRadius = width
+    val shieldRadius = height + 10
 
     private val desiredAngle: Double
         get() {
