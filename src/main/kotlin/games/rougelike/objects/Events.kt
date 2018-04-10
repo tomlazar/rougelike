@@ -16,7 +16,8 @@ class Events {
         PLAN_1_INTRO(10100, {
             LevelManager.current.showPrompts(
                     {
-                        DialogBuilder.Prompt(NARRATION, "On a normal April day, Dennis Brylow finds himself in his office waiting for his bus-time.")
+                        DialogBuilder.Prompt(NARRATION, "On a normal April day, Dennis Brylow finds himself in his office waiting " +
+                                "for his bus to arrive.")
                     },
                     { DialogBuilder.Prompt(THINKING, "I suppose I can check some emails while I wait.") },
                     { DialogBuilder.Prompt(TERMINAL, "$ alpine --check-mail") },
@@ -175,7 +176,7 @@ class Events {
                                         "going to check it out.")
                             },
                             callback = {
-                                HUD.objective = "Investigate suspicious activity in the basement lecture pit"
+                                HUD.objective = "Investigate the basement lecture pit"
                                 {}
                             }
                     )
@@ -353,7 +354,7 @@ class Events {
                     { DialogBuilder.DialogPrompt("Zan", "Well, more for me.") },
                     { DialogBuilder.DialogPrompt("Rene", "Hey! You're gonna share, right?") },
                     { DialogBuilder.DialogPrompt("Zan", "Nah...") },
-                    { DialogBuilder.DialogPrompt("Rene", "Aww, screw you...") }
+                    { DialogBuilder.DialogPrompt("Rene", "Well screw you...") }
             )
         })
         ;
