@@ -32,11 +32,11 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     }
 
     override fun render() {
-        render_hackEffect()
+        renderHackEffect()
     }
 
     override fun update() {
-        update_hackEffect()
+        updateHackEffect()
     }
 
     // region Hack Effect
@@ -82,14 +82,14 @@ class Effects(gc: GraphicsContext) : IGameObject(gc), IController {
     }
 
 
-    fun render_hackEffect() {
+    fun renderHackEffect() {
         if (hackEffectState.isActive) {
             setHackEffectVisuals(gc, 1.0 - hackEffectCounter / hackEffectState.duration, hackEffectState)
             gc.strokeLine(hackSourceX, hackSourceY, hackEffectX, hackEffectY)
         }
     }
 
-    fun update_hackEffect() {
+    fun updateHackEffect() {
         val hacking = (Equipment.acquiredEquipment[Equipment.EquipmentType.HACK]!!
                 && (LevelManager.inputManager.isInputActive(InputBinding.HACK)
                 || (hackEffectState == HackEffect.HIT || hackEffectState == HackEffect.MISS))

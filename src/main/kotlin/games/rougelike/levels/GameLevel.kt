@@ -30,7 +30,7 @@ class GameLevel : ILevel() {
         val WIDTH = 600.0
 
         const val NAME: String = ""
-        val LEVEL_REGEX = ".*Level([^\\.]+)\\.csv".toRegex()
+        val LEVEL_REGEX = ".*Level([^.]+)\\.csv".toRegex()
 
         val levels = File("Levels").listFiles().filter { f: File -> f.isFile && LEVEL_REGEX.matches(f.name) }.map { f: File ->
             val it = GameLevel()
@@ -90,7 +90,7 @@ class GameLevel : ILevel() {
                     val speed = Grid.cellSize * (Random().nextDouble() + 1.5)
                     val target =
                             if (gridcell.targetName != null) {
-                                val it = gameObjects.find { o -> o is Person && (o as Person).name.equals(gridcell.targetName) }!! as Person
+                                val it = gameObjects.find { o -> o is Person && o.name == gridcell.targetName }!! as Person
                                 it.speed = speed
                                 it
                             } else

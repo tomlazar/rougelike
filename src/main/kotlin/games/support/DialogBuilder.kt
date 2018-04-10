@@ -8,9 +8,12 @@ import javafx.scene.control.TextField
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.layout.HBox
+import javafx.scene.layout.Region
 import javafx.scene.layout.VBox
 import javafx.scene.text.Font
+import javafx.scene.text.FontWeight
 import javafx.scene.text.Text
+import javafx.stage.StageStyle
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -47,7 +50,7 @@ object DialogBuilder {
                 val imv = ImageView(image)
 
                 imv.isPreserveRatio = true
-                imv.fitHeight = 75.0
+                imv.fitWidth = 75.0
 
                 personcache[speakerPath] = imv
                 return imv
@@ -56,15 +59,17 @@ object DialogBuilder {
 
         override fun build(): Alert {
             val alert = super.build()
+            alert.initStyle(StageStyle.UTILITY)
 
 
             alert.headerText = null
             alert.contentText = null
 
             val header = Text("$speaker: ")
-            header.font = Font.font(24.0)
+            header.font = Font.font("Verdana", FontWeight.BOLD, 24.0)
 
-            val content = Text(text)
+            val content = Text(text.trim())
+            content.font = Font.font(16.0)
             content.wrappingWidth = 200.0
 
             val textGroup = VBox(header, content)
@@ -72,6 +77,8 @@ object DialogBuilder {
 
             textGroup.padding = Insets(20.0)
             group.padding = Insets(20.0)
+
+            alert.dialogPane.setPrefSize(400.0, 400.0)
 
             alert.dialogPane.children.addAll(HBox(generateperson(speaker), textGroup))
 
