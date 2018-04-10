@@ -218,7 +218,7 @@ class Events {
                             { DialogBuilder.DialogPrompt("Liam", " Dr. B! What's poppin'?") },
                             { DialogBuilder.DialogPrompt("Dennis", " Good... Were these robots not bothering you?") },
                             {
-                                DialogBuilder.DialogPrompt("Liam", "Nope! I saw them chasing Dr. Factor earlier today, but they've been ignoring me and the " +
+                                DialogBuilder.DialogPrompt("Liam", "Nope! I saw them chasing Dr. Factor and Kathleen earlier today, but they've been ignoring me and the " +
                                         "other students. I've been working on these machines and they were just chilling out over there.")
                             },
                             { DialogBuilder.DialogPrompt("Dennis", " Huh.") },
@@ -261,20 +261,24 @@ class Events {
                                 DialogBuilder.Prompt(NARRATION, "The man climbs out of the scrap pile, Dennis now recognizing him as none other than Fr. Thomas Schwarz.")
                             },
                             { DialogBuilder.DialogPrompt("Dennis", " Schwarz! You're behind all of this?") },
-                            { DialogBuilder.DialogPrompt("Fr. Schwarz", " Dennis. It's not what it looks like.") },
+                            { DialogBuilder.DialogPrompt("Schwarz", " Dennis. It's not what it looks like.") },
                             {
-                                DialogBuilder.DialogPrompt("Fr. Schwarz", "See, I ran your TA-bot software you set up for my Computer Security class, but as " +
+                                DialogBuilder.DialogPrompt("Schwarz", "See, I ran your TA-bot software you set up for my Computer Security class, but as " +
                                         "soon as I ran it, the program recognized I'm not you and went haywire! It ordered all this construction equipment " +
                                         "to be delivered and started to take over Cudahy!")
                             },
                             {
-                                DialogBuilder.DialogPrompt("Fr. Schwarz", "I just finished disassembling one of " +
+                                DialogBuilder.DialogPrompt("Schwarz", "I just finished disassembling one of " +
                                         "the bots and figured out how to cut off this terminal it's been running from.")
                             },
                             { DialogBuilder.Prompt(NARRATION, "Dennis shakes his head.") },
                             {
                                 DialogBuilder.DialogPrompt("Dennis", "Well, at least you've gotten it to stop making new robots. Let's go clean up the rest " +
                                         "of this mess.")
+                            },
+                            callback = {
+                                LevelManager.current.stop({})
+
                             }
                     )
                 }),
